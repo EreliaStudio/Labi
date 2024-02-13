@@ -1,5 +1,7 @@
 #include "labi.hpp"
 
+#include "spk_node.hpp"
+#include "spk_chunk.hpp"
 #include "spk_tilemap.hpp"
 
 enum class Event
@@ -34,10 +36,22 @@ private:
         spk::Chunk::OnScreenSize = size() / _mainCamera->orthographicSize();
         _gameEngineRenderer.setGeometry(anchor(), size());
 
-        spk::Vector2Int downRight = spk::Tilemap::convertWorldToChunkPosition(convertScreenToWorldCoordinate(size() / 2.0f));
-        spk::Vector2Int upLeft = spk::Tilemap::convertWorldToChunkPosition(convertScreenToWorldCoordinate(size() / -2.0f));
+        spk::Vector2Int end = spk::Tilemap::convertWorldToChunkPosition(convertScreenToWorldCoordinate(size() / 2.0f) + _cameraObject.transform().translation.get().xy());
+        spk::Vector2Int start = spk::Tilemap::convertWorldToChunkPosition(convertScreenToWorldCoordinate(size() / -2.0f) + _cameraObject.transform().translation.get().xy());
 
-        _backgroundTilemap.setViewRange(upLeft, downRight);
+        for (int x = start.x; x <= end.x; x++)
+        {
+            for (int y = start.y; y <= end.y; y++)
+            {
+                spk::Vector2Int chunkPosition = spk::Vector2Int(x, y);
+                if (_backgroundTilemap.chunks().contains(chunkPosition) == false)
+                {
+                    _backgroundTilemap.chunks()[chunkPosition] = std::make_unique<spk::Chunk>(chunkPosition);
+                }
+            }
+        }
+
+        _backgroundTilemap.setViewRange(start, end);
 
         EventManager::instance()->notify(Event::OnCameraChunkVisionRangeChange);
     }
@@ -49,14 +63,20 @@ private:
 
     void _onUpdate()
     {
-
+ 
     }
 
     void _loadNodes()
     {
-        _backgroundTilemap.nodeMap()[0] = spk::Node(spk::Vector2Int(0, 0), spk::Vector2Int(0, 0), false);
+        _backgroundTilemap.nodeMap()[0] = spk::Node(spk::Vector2Int(0, 0), spk::Vector2Int(0, 0), true);
+        _backgroundTilemap.nodeMap()[1] = spk::Node(spk::Vector2Int(4, 0), spk::Vector2Int(0, 0), false);
     }
 
+    void _updateVisibleChunks()
+    {
+        _backgroundTilemap.updateVisibleChunks();
+    }
+ 
 public:
     WorldManagerWidget(const std::string& p_name) :
         IWidget(p_name),
@@ -76,8 +96,8 @@ public:
         _mainCamera->setType(spk::Camera::Type::Orthographic);
         _mainCamera->setAsMainCamera();
 
-        _subscriptionContracts.push_back(EventManager::instance()->subscribe(Event::OnCameraChunkVisionRangeChange, [&](){_backgroundTilemap.updateVisibleChunks();}));
-        _subscriptionContracts.push_back(EventManager::instance()->subscribe(Event::OnPlayerChangingChunk, [&](){_backgroundTilemap.updateVisibleChunks();}));
+        _subscriptionContracts.push_back(EventManager::instance()->subscribe(Event::OnCameraChunkVisionRangeChange, [&](){_updateVisibleChunks();}));
+        _subscriptionContracts.push_back(EventManager::instance()->subscribe(Event::OnPlayerChangingChunk, [&](){_updateVisibleChunks();}));
 
         EventManager::instance()->notify(Event::OnPlayerChangingChunk);
 

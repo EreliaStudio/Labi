@@ -5,9 +5,8 @@ namespace spk
 {
 	void Tilemap::InternalComponent::_activatingVisibleChunks()
 	{
-		spk::Vector2Int cameraChunkPosition = convertWorldToChunkPosition(spk::Camera::mainCamera()->owner()->transform().translation.get().xy());
-		spk::Vector2Int start = cameraChunkPosition + _negativeChunkRenderingOffset;
-		spk::Vector2Int end = cameraChunkPosition + _positiveChunkRenderingOffset;
+		spk::Vector2Int start = _negativeChunkRenderingOffset;
+		spk::Vector2Int end = _positiveChunkRenderingOffset;
 
 		for (size_t i = 0; i < _activeChunks.size(); i++)
 		{
@@ -15,17 +14,22 @@ namespace spk
 		}
 		_activeChunks.clear();
 
-		for (int i = start.x; i <= end.x; i++)
+		for (int i = start.x; i <= end.x; i++) 
 		{
 			for (int j = start.y; j <= end.y; j++)
 			{
-				std::unique_ptr<Chunk>& tmpChunk = requestChunk(spk::Vector2Int(i, j));
-				owner()->addChild(tmpChunk.get());
-				tmpChunk->launchBake(_nodeMap);
+				spk::Vector2Int chunkPosition = spk::Vector2Int(i, j);				
+				if (_chunks.contains(chunkPosition) == true)
+				{
+					std::unique_ptr<Chunk>& tmpChunk = _chunks.at(spk::Vector2Int(i, j));
 
-				tmpChunk->activate();
+					owner()->addChild(tmpChunk.get());
+					tmpChunk->launchBake(dynamic_cast<const Tilemap*>(owner()));
 
-				_activeChunks.push_back(tmpChunk.get());
+					tmpChunk->activate();
+
+					_activeChunks.push_back(tmpChunk.get());
+				}
 			}
 		}
 	}
@@ -66,25 +70,14 @@ namespace spk
 		_activatingVisibleChunks();
 	}
 
-	bool Tilemap::InternalComponent::contain(const spk::Vector2Int& p_chunkPosition) const
+	std::map<spk::Vector2Int, std::unique_ptr<Chunk>>& Tilemap::InternalComponent::chunks()
 	{
-		return (_chunks.contains(p_chunkPosition));
+		return (_chunks);
 	}
 
-	std::unique_ptr<Chunk>& Tilemap::InternalComponent::requestChunk(const spk::Vector2Int& p_chunkPosition)
+	const std::map<spk::Vector2Int, std::unique_ptr<Chunk>>& Tilemap::InternalComponent::chunks() const
 	{
-		if (_chunks.contains(p_chunkPosition) == false)
-		{
-			_chunks[p_chunkPosition] = std::make_unique<Chunk>(p_chunkPosition);
-		}
-		return (_chunks.at(p_chunkPosition));
-	}
-
-	const std::unique_ptr<Chunk>& Tilemap::InternalComponent::chunk(const spk::Vector2Int& p_chunkPosition) const
-	{
-		if (_chunks.contains(p_chunkPosition) == false)
-			throw std::runtime_error("Can't access chunk [" + p_chunkPosition.to_string() + "] : it doesn't exist");
-		return (_chunks.at(p_chunkPosition));
+		return (_chunks);
 	}
 
     Tilemap::Tilemap(const std::string& p_name) : 
@@ -98,6 +91,7 @@ namespace spk
 	{
 		return (_internalComponent->nodeMap());
 	}
+
 	const Tilemap::NodeMap& Tilemap::nodeMap() const
 	{
 		return (_internalComponent->nodeMap());
@@ -113,20 +107,15 @@ namespace spk
         _internalComponent->setViewRange(p_negativeChunkRenderingOffset, p_positiveChunkRenderingOffset);
     }
 
-    bool Tilemap::contain(const spk::Vector2Int& p_chunkPosition) const
-    {
-        return (_internalComponent->contain(p_chunkPosition));
-    }
+	std::map<spk::Vector2Int, std::unique_ptr<Chunk>>& Tilemap::chunks()
+	{
+		return (_internalComponent->chunks());
+	}
 
-    std::unique_ptr<Chunk>& Tilemap::requestChunk(const spk::Vector2Int& p_chunkPosition)
-    {
-        return (_internalComponent->requestChunk(p_chunkPosition));
-    }
-
-    const std::unique_ptr<Chunk>& Tilemap::chunk(const spk::Vector2Int& p_chunkPosition) const
-    {
-        return (_internalComponent->chunk(p_chunkPosition));
-    }
+	const std::map<spk::Vector2Int, std::unique_ptr<Chunk>>& Tilemap::chunks() const
+	{
+		return (_internalComponent->chunks());
+	}
 
     spk::Vector2Int Tilemap::convertWorldToChunkPosition(const spk::Vector2Int& p_position)
     {

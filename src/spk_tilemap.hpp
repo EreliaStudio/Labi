@@ -38,9 +38,8 @@ namespace spk
 
 			void setViewRange(const spk::Vector2Int& p_negativeChunkRenderingOffset, const spk::Vector2Int& p_positiveChunkRenderingOffset);
 
-			bool contain(const spk::Vector2Int& p_chunkPosition) const;
-			std::unique_ptr<Chunk>& requestChunk(const spk::Vector2Int& p_chunkPosition);
-			const std::unique_ptr<Chunk>& chunk(const spk::Vector2Int& p_chunkPosition) const;
+			std::map<spk::Vector2Int, std::unique_ptr<Chunk>>& chunks();
+			const std::map<spk::Vector2Int, std::unique_ptr<Chunk>>& chunks() const;
 		};
 
 		InternalComponent* _internalComponent;
@@ -50,14 +49,13 @@ namespace spk
 
 		NodeMap& nodeMap();
 		const NodeMap& nodeMap() const;
+		
+		std::map<spk::Vector2Int, std::unique_ptr<Chunk>>& chunks();
+		const std::map<spk::Vector2Int, std::unique_ptr<Chunk>>& chunks() const;
 
 		void updateVisibleChunks();
 
 		void setViewRange(const spk::Vector2Int& p_negativeChunkRenderingOffset, const spk::Vector2Int& p_positiveChunkRenderingOffset);
-
-		bool contain(const spk::Vector2Int& p_chunkPosition) const;
-		std::unique_ptr<Chunk>& requestChunk(const spk::Vector2Int& p_chunkPosition);
-		const std::unique_ptr<Chunk>& chunk(const spk::Vector2Int& p_chunkPosition) const;
 
 		static spk::Vector2Int convertWorldToChunkPosition(const spk::Vector2Int& p_position);
 	};

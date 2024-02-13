@@ -13,15 +13,149 @@ namespace spk
 		_mesh.addPoint(spk::Vector3(p_x + 1 - 0.5f, p_y + 0 - 0.5f, p_z));
 		_mesh.addPoint(spk::Vector3(p_x + 0 - 0.5f, p_y + 0 - 0.5f, p_z));
 
-		_mesh.addUVs(p_node.sprite + spk::Vector2(1, 0));
-		_mesh.addUVs(p_node.sprite + spk::Vector2(0, 0));
-		_mesh.addUVs(p_node.sprite + spk::Vector2(1, 1));
-		_mesh.addUVs(p_node.sprite + spk::Vector2(0, 1));
+		_mesh.addUVs(p_node.sprite + spk::Vector2Int(1, 0));
+		_mesh.addUVs(p_node.sprite + spk::Vector2Int(0, 0));
+		_mesh.addUVs(p_node.sprite + spk::Vector2Int(1, 1)); 
+		_mesh.addUVs(p_node.sprite + spk::Vector2Int(0, 1));
 
 		for (size_t i = 0; i < 6; i++)
 		{
 			_mesh.addIndex(indexes[i] + nbVertices, indexes[i] + nbVertices);
 		}
+	}
+
+	void Chunk::InternalComponent::_setNeighbourChunks(const Tilemap* p_tilemap)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				
+			}
+		}
+	}
+
+	spk::Vector2Int _computeAutotileSubdivision(size_t p_x, size_t p_y, size_t p_z, size_t p_face)
+	{
+		static const spk::Vector2Int neightbours[4][3] = {
+			{
+				spk::Vector2Int(-1, 0),
+				spk::Vector2Int(-1, -1),
+				spk::Vector2Int(0, -1),
+			},
+			{
+				spk::Vector2Int(1, 0),
+				spk::Vector2Int(1, -1),
+				spk::Vector2Int(0, -1),
+			},
+			{
+				spk::Vector2Int(-1, 0),
+				spk::Vector2Int(-1, 1),
+				spk::Vector2Int(0, 1),
+			},
+			{
+				spk::Vector2Int(1, 0),
+				spk::Vector2Int(1, 1),
+				spk::Vector2Int(0, 1),
+			}
+		};
+
+		int neightbourA = 0;
+		int neightbourB = 0;
+		int neightbourC = 0;
+
+		static const spk::Vector2Int results[4][2][2][2] = {
+			{
+				{
+					{
+						spk::Vector2Int(1, 1),
+						spk::Vector2Int(1, 1)
+					},
+					{
+						spk::Vector2Int(1, 1),
+						spk::Vector2Int(1, 1)
+					},
+				},
+				{
+					{
+						spk::Vector2Int(1, 1),
+						spk::Vector2Int(1, 1)
+					},
+					{
+						spk::Vector2Int(1, 1),
+						spk::Vector2Int(1, 1)
+					}
+				}
+			},
+			{
+				{
+					{
+						spk::Vector2Int(1, 1),
+						spk::Vector2Int(1, 1)
+					},
+					{
+						spk::Vector2Int(1, 1),
+						spk::Vector2Int(1, 1)
+					},
+				},
+				{
+					{
+						spk::Vector2Int(1, 1),
+						spk::Vector2Int(1, 1)
+					},
+					{
+						spk::Vector2Int(1, 1),
+						spk::Vector2Int(1, 1)
+					}
+				}
+			},
+			{
+				{
+					{
+						spk::Vector2Int(1, 1),
+						spk::Vector2Int(1, 1)
+					},
+					{
+						spk::Vector2Int(1, 1),
+						spk::Vector2Int(1, 1)
+					},
+				},
+				{
+					{
+						spk::Vector2Int(1, 1),
+						spk::Vector2Int(1, 1)
+					},
+					{
+						spk::Vector2Int(1, 1),
+						spk::Vector2Int(1, 1)
+					}
+				}
+			},
+			{
+				{
+					{
+						spk::Vector2Int(1, 1),
+						spk::Vector2Int(1, 1)
+					},
+					{
+						spk::Vector2Int(1, 1),
+						spk::Vector2Int(1, 1)
+					},
+				},
+				{
+					{
+						spk::Vector2Int(1, 1),
+						spk::Vector2Int(1, 1)
+					},
+					{
+						spk::Vector2Int(1, 1),
+						spk::Vector2Int(1, 1)
+					}
+				}
+			}
+		};
+
+		return (results[p_face][neightbourA][neightbourB][neightbourC]);
 	}
 
 	void Chunk::InternalComponent::_insertAutotileToMesh(size_t p_x, size_t p_y, size_t p_z, const Node &p_node)
@@ -42,10 +176,11 @@ namespace spk
 			_mesh.addPoint(spk::Vector3(p_x + 0.0f, p_y - 0.5f, p_z) + offsets[i]);
 			_mesh.addPoint(spk::Vector3(p_x - 0.5f, p_y - 0.5f, p_z) + offsets[i]);
 
-			_mesh.addUVs(p_node.sprite + spk::Vector2(1, 0));
-			_mesh.addUVs(p_node.sprite + spk::Vector2(0, 0));
-			_mesh.addUVs(p_node.sprite + spk::Vector2(1, 1));
-			_mesh.addUVs(p_node.sprite + spk::Vector2(0, 1));
+			spk::Vector2Int autotileOffset = p_node.sprite + _computeAutotileSubdivision(p_x, p_y, p_z, i);
+			_mesh.addUVs(autotileOffset + spk::Vector2Int(1, 0));
+			_mesh.addUVs(autotileOffset + spk::Vector2Int(0, 0));
+			_mesh.addUVs(autotileOffset + spk::Vector2Int(1, 1)); 
+			_mesh.addUVs(autotileOffset + spk::Vector2Int(0, 1));
 
 			for (size_t i = 0; i < 6; i++)
 			{
@@ -79,7 +214,7 @@ namespace spk
 					int8_t nodeIndex = _data[i][j][h];
 					if (nodeIndex != -1 && p_nodeMap.contains(nodeIndex) == true)
 						_insertTileToMesh(i, j, h, p_nodeMap.at(nodeIndex));
-				}
+				} 
 			}
 		}
 	}
@@ -94,7 +229,12 @@ namespace spk
 
 	Chunk::InternalComponent::InternalComponent(const std::string &p_name) :
 		spk::GameComponent(p_name),
-		_ownerMeshRenderer(owner()->getComponent<spk::MeshRenderer>())
+		_ownerMeshRenderer(owner()->getComponent<spk::MeshRenderer>()),
+		_neightbourChunks{
+			{nullptr, nullptr, nullptr},
+			{nullptr, this, nullptr},
+			{nullptr, nullptr, nullptr},
+		}
 	{
 		_mesh = spk::createSpriteMesh();
 		_ownerMeshRenderer->setMesh(&_mesh);
@@ -106,7 +246,14 @@ namespace spk
 			{
 				for (size_t k = 0; k < Height; k++)
 				{
-					_data[i][j][k] = ((i == 0 || j == 0) && k == 0 ? 0 : -1);
+					if (k == 0)
+					{
+						_data[i][j][k] = ((i == 0 || j == 0) ? 0 : 1);
+					}
+					else
+					{ 
+						_data[i][j][k] = -1;
+					}
 				}
 			}
 		}
@@ -133,9 +280,10 @@ namespace spk
 		return (-1);
 	}
 
-	void Chunk::InternalComponent::launchBake(const std::map<Node::IndexType, Node>& p_nodeMap)
+	void Chunk::InternalComponent::launchBake(const Tilemap* p_tilemap)
 	{
-		_bake(p_nodeMap);
+		_setNeighbourChunks(p_tilemap);
+		_bake(p_tilemap->nodeMap());
 		_mesh.validate();
 	}
 
@@ -164,9 +312,9 @@ namespace spk
 		return (_internalComponent->content(p_position, p_height));
 	}
 
-	void Chunk::launchBake(const std::map<Node::IndexType, Node>& p_nodeMap)
+	void Chunk::launchBake(const Tilemap* p_tilemap)
 	{
-		_internalComponent->launchBake(p_nodeMap);
+		_internalComponent->launchBake(p_tilemap);
 	}
 
 	spk::Vector2Int Chunk::convertAbsoluteToRelativePosition(const spk::Vector2Int &p_position)
