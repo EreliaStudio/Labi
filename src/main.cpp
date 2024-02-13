@@ -2,7 +2,8 @@
 
 enum class Event
 {
-    OnPlayerChangingChunk
+    OnPlayerChangingChunk,
+    OnCameraChunkVisionRangeChange
 };
 
 using EventManager = spk::Singleton<spk::EventManager<Event>>;
@@ -19,13 +20,46 @@ private:
     class InternalComponent : public spk::GameComponent
     {
     private:
-        int8_t data[Size][Size][Height];
+        int8_t _data[Size][Size][Height];
         spk::MeshRenderer* _ownerMeshRenderer;
         spk::Mesh _mesh;
 
+        void _insertTileToMesh(size_t p_x, size_t p_y, size_t p_z)
+        {
+            unsigned int indexes[6] = {0, 1, 2, 2, 1, 3};
+            unsigned int nbVertices = _mesh.points().size();
+
+            _mesh.addPoint(spk::Vector3(p_x + 1 - 0.5f, p_y + 1 - 0.5f, p_z));
+            _mesh.addPoint(spk::Vector3(p_x + 0 - 0.5f, p_y + 1 - 0.5f, p_z));
+            _mesh.addPoint(spk::Vector3(p_x + 1 - 0.5f, p_y + 0 - 0.5f, p_z));
+            _mesh.addPoint(spk::Vector3(p_x + 0 - 0.5f, p_y + 0 - 0.5f, p_z));
+
+            _mesh.addUVs(spk::Vector2(1, 0));
+            _mesh.addUVs(spk::Vector2(0, 0));
+            _mesh.addUVs(spk::Vector2(1, 1));
+            _mesh.addUVs(spk::Vector2(0, 1));
+
+            for (size_t i = 0; i < 6; i++)
+            {
+                _mesh.addIndex(indexes[i] + nbVertices, indexes[i] + nbVertices);
+            }
+        }
+
         void _bake()
         {
+            _mesh.clear();
 
+            for (size_t i = 0; i < Size; i++)
+            {
+                for (size_t j = 0; j < Size; j++)
+                {
+                    for (size_t h = 0; h < Height; h++)
+                    {
+                        if (_data[i][j][h] != -1)
+                            _insertTileToMesh(i, j, h);
+                    }
+                }
+            }
         }
 
         void _onRender()
@@ -53,7 +87,7 @@ private:
                 {
                     for (size_t k = 0; k < Height; k++)
                     {
-                        data[i][j][k] = -1;
+                        _data[i][j][k] = (k == 0 ? 0 : -1);
                     }
                 }
             }
@@ -65,7 +99,7 @@ private:
                 p_position.y >= 0 && p_position.y < Size &&
                 p_height >= 0 && p_height < Height)
             {
-                data[p_position.x][p_position.y][p_height] = p_value;
+                _data[p_position.x][p_position.y][p_height] = p_value;
             }
         }
 
@@ -75,7 +109,7 @@ private:
                 p_position.y >= 0 && p_position.y < Size &&
                 p_height >= 0 && p_height < Height)
             {
-                return (data[p_position.x][p_position.y][p_height]);
+                return (_data[p_position.x][p_position.y][p_height]);
             }
             return (-1);
         }
@@ -97,7 +131,7 @@ public:
         if (SpriteSheet == nullptr)
             SpriteSheet = new spk::SpriteSheet("basicSprite.png", spk::Vector2Int(8, 6));
 
-        transform().translation = spk::Vector3(p_position.x * Size, p_position.y * Size, 0);
+        transform().translation = spk::Vector3(p_position.x * static_cast<int>(Size), p_position.y * static_cast<float>(Size), 0);
 
         _meshRenderer = addComponent<spk::MeshRenderer>("MeshRenderer");
         _meshRenderer->setSpriteSheet(SpriteSheet);
@@ -134,15 +168,21 @@ private:
     class InternalComponent : public spk::GameComponent
     {
     private:
-        spk::Vector2Int _viewRange;
+        spk::Vector2Int _negativeChunkRenderingOffset;
+        spk::Vector2Int _positiveChunkRenderingOffset;
+
         std::map<spk::Vector2Int, std::unique_ptr<Chunk>> _chunks;
         std::vector<Chunk*> _activeChunks;
-        std::unique_ptr<spk::EventManager<Event>::Contract> _subscriptionContract;
+        std::vector<std::unique_ptr<spk::EventManager<Event>::Contract>> _subscriptionContracts;
 
-        void _onPlayerChangingChunk()
+        void _activatingVisibleChunks()
         {
-            spk::Vector2Int start = convertWorldToChunkPosition(spk::Camera::mainCamera()->owner()->transform().translation.get().xy()) - spk::Vector2::floor(static_cast<spk::Vector2>(_viewRange) / 2.0f);
-            spk::Vector2Int end = start + _viewRange;
+            spk::Vector2Int cameraChunkPosition = convertWorldToChunkPosition(spk::Camera::mainCamera()->owner()->transform().translation.get().xy());
+            spk::Vector2Int start = cameraChunkPosition + _negativeChunkRenderingOffset;
+            spk::Vector2Int end = cameraChunkPosition + _positiveChunkRenderingOffset;
+
+            std::cout << "Start : " << start << std::endl;
+            std::cout << "End : " << end << std::endl;
 
             for (size_t i = 0; i < _activeChunks.size(); i++)
             {
@@ -150,15 +190,14 @@ private:
             }
             _activeChunks.clear();
 
-            for (int i = start.x; i < end.x; i++)
+            for (int i = start.x; i <= end.x; i++)
             {
-                for (int j = start.y; j < end.y; j++)
+                for (int j = start.y; j <= end.y; j++)
                 {
                     std::unique_ptr<Chunk>& tmpChunk = requestChunk(spk::Vector2Int(i, j));
                     owner()->addChild(tmpChunk.get());
+                    tmpChunk->launchBake();
 
-                    tmpChunk->transform().scale = spk::Vector3(Chunk::Size, Chunk::Size, 1);
-                    tmpChunk->transform().rotation = spk::Quaternion::fromEulerAngles(spk::Vector3(0, 0, 45));
                     tmpChunk->activate();
 
                     _activeChunks.push_back(tmpChunk.get());
@@ -180,12 +219,15 @@ private:
         InternalComponent(const std::string& p_name) : 
             spk::GameComponent(p_name)
         {
-            _subscriptionContract = EventManager::instance()->subscribe(Event::OnPlayerChangingChunk, [&](){_onPlayerChangingChunk();});
+            _subscriptionContracts.push_back(EventManager::instance()->subscribe(Event::OnPlayerChangingChunk, [&](){_activatingVisibleChunks();}));
+            _subscriptionContracts.push_back(EventManager::instance()->subscribe(Event::OnCameraChunkVisionRangeChange, [&](){_activatingVisibleChunks();}));
         }
 
-        void setViewRange(const spk::Vector2Int& p_viewRange)
+        void setViewRange(const spk::Vector2Int& p_negativeChunkRenderingOffset, const spk::Vector2Int& p_positiveChunkRenderingOffset)
         {
-            _viewRange = p_viewRange;
+            _negativeChunkRenderingOffset = p_negativeChunkRenderingOffset;
+            _positiveChunkRenderingOffset = p_positiveChunkRenderingOffset;
+            EventManager::instance()->notify(Event::OnCameraChunkVisionRangeChange);
         }
 
         bool contain(const spk::Vector2Int& p_chunkPosition) const
@@ -217,7 +259,13 @@ public:
         spk::GameObject(p_name),
         _internalComponent(addComponent<InternalComponent>("InternalComponent"))
     {
-        _internalComponent->setViewRange(spk::Vector2Int(3, 3));
+
+    }
+
+    void setViewRange(const spk::Vector2Int& p_negativeChunkRenderingOffset, const spk::Vector2Int& p_positiveChunkRenderingOffset)
+    {
+        _internalComponent->setViewRange(p_negativeChunkRenderingOffset, p_positiveChunkRenderingOffset);
+
     }
 
     bool contain(const spk::Vector2Int& p_chunkPosition) const
@@ -237,7 +285,10 @@ public:
 
     static spk::Vector2Int convertWorldToChunkPosition(const spk::Vector2Int& p_position)
     {
-        return (spk::Vector2Int::floor((p_position / static_cast<float>(Chunk::Size))));
+        spk::Vector2 divided = static_cast<spk::Vector2>(p_position) / static_cast<float>(Chunk::Size);
+        spk::Vector2Int floorized = spk::Vector2Int::floor(divided);
+        std::cout << "Point : " << p_position << " convert to : " << floorized << "(" << divided << ")" << std::endl;
+        return (floorized);
     }
 };
 
@@ -252,10 +303,20 @@ private:
 
     Tilemap _backgroundTilemap;
 
+    spk::Vector2 convertScreenToWorldCoordinate(const spk::Vector2Int& p_screenPosition)
+    {
+        return (p_screenPosition / Chunk::OnScreenSize);
+    }
+
     void _onGeometryChange()
     {
         Chunk::OnScreenSize = size() / _mainCamera->orthographicSize();
         _gameEngineRenderer.setGeometry(anchor(), size());
+
+        spk::Vector2Int downRight = Tilemap::convertWorldToChunkPosition(convertScreenToWorldCoordinate(size() / 2.0f));
+        spk::Vector2Int upLeft = Tilemap::convertWorldToChunkPosition(convertScreenToWorldCoordinate(size() / -2.0f));
+
+        _backgroundTilemap.setViewRange(upLeft, downRight);
     }
 
     void _onRender()
