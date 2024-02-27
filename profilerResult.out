@@ -1,353 +1,257 @@
 {
    "CentralWidget": 
    {
-       "Average": 121.932358,
+       "Average": 127.965950,
        "CPU usage": 0.000001,
-       "Cardinal": 2542942,
-       "Max": 26900,
-       "Min": 0
+       "Cardinal": 3392256,
+       "Max": 79600,
+       "Min": 100
    },
    "Component : Player::BodyRenderer": 
    {
-       "Average": 75.521866,
-       "CPU usage": 0.000001,
-       "Cardinal": 10393,
-       "Max": 5200,
+       "Average": 73.488182,
+       "CPU usage": 0.000000,
+       "Cardinal": 14552,
+       "Max": 9700,
        "Min": 0
    },
    "Component : Player::Camera::Camera": 
    {
-       "Average": 78.735672,
+       "Average": 83.644753,
        "CPU usage": 0.000001,
-       "Cardinal": 10393,
-       "Max": 3800,
+       "Cardinal": 14552,
+       "Max": 4800,
        "Min": 0
    },
    "Component : TilemapObject::Chunk [-1 / -1]::Chunk -1 / -1": 
    {
-       "Average": 58.494850,
-       "CPU usage": 0.000001,
-       "Cardinal": 1754,
-       "Max": 2800,
+       "Average": 66.954491,
+       "CPU usage": 0.000000,
+       "Cardinal": 2548,
+       "Max": 300,
        "Min": 0
    },
    "Component : TilemapObject::Chunk [-1 / 0]::Chunk -1 / 0": 
    {
-       "Average": 51.322987,
+       "Average": 62.349033,
        "CPU usage": 0.000000,
-       "Cardinal": 2003,
-       "Max": 100,
+       "Cardinal": 8361,
+       "Max": 2300,
        "Min": 0
    },
    "Component : TilemapObject::Chunk [-1 / 1]::Chunk -1 / 1": 
    {
-       "Average": 48.979580,
+       "Average": 50.847427,
        "CPU usage": 0.000000,
-       "Cardinal": 49,
-       "Max": 100,
+       "Cardinal": 4897,
+       "Max": 3300,
        "Min": 0
    },
    "Component : TilemapObject::Chunk [0 / -1]::Chunk 0 / -1": 
    {
-       "Average": 50.827190,
+       "Average": 65.777504,
        "CPU usage": 0.000000,
-       "Cardinal": 1753,
-       "Max": 100,
+       "Cardinal": 5549,
+       "Max": 5000,
        "Min": 0
    },
    "Component : TilemapObject::Chunk [0 / 0]::Chunk 0 / 0": 
    {
-       "Average": 51.116341,
+       "Average": 55.777935,
        "CPU usage": 0.000000,
-       "Cardinal": 2553,
-       "Max": 3100,
+       "Cardinal": 13898,
+       "Max": 4100,
        "Min": 0
    },
    "Component : TilemapObject::Chunk [0 / 1]::Chunk 0 / 1": 
    {
-       "Average": 57.056694,
-       "CPU usage": 0.000001,
-       "Cardinal": 4641,
-       "Max": 5300,
+       "Average": 51.195721,
+       "CPU usage": 0.000000,
+       "Cardinal": 6774,
+       "Max": 2300,
        "Min": 0
    },
-   "Component : TilemapObject::Chunk [0 / 2]::Chunk 0 / 2": 
+   "Component : TilemapObject::Chunk [1 / -1]::Chunk 1 / -1": 
    {
-       "Average": 54.543484,
-       "CPU usage": 0.000001,
-       "Cardinal": 4688,
-       "Max": 5200,
-       "Min": 0
-   },
-   "Component : TilemapObject::Chunk [0 / 3]::Chunk 0 / 3": 
-   {
-       "Average": 54.321003,
-       "CPU usage": 0.000001,
-       "Cardinal": 648,
-       "Max": 200,
+       "Average": 52.826263,
+       "CPU usage": 0.000000,
+       "Cardinal": 2406,
+       "Max": 3600,
        "Min": 0
    },
    "Component : TilemapObject::Chunk [1 / 0]::Chunk 1 / 0": 
    {
-       "Average": 49.283669,
+       "Average": 50.363953,
        "CPU usage": 0.000000,
-       "Cardinal": 349,
-       "Max": 100,
+       "Cardinal": 5220,
+       "Max": 300,
        "Min": 0
    },
    "Component : TilemapObject::Chunk [1 / 1]::Chunk 1 / 1": 
    {
-       "Average": 53.967892,
-       "CPU usage": 0.000001,
-       "Cardinal": 4990,
-       "Max": 3300,
-       "Min": 0
-   },
-   "Component : TilemapObject::Chunk [1 / 2]::Chunk 1 / 2": 
-   {
-       "Average": 54.130310,
-       "CPU usage": 0.000001,
-       "Cardinal": 7336,
-       "Max": 5300,
-       "Min": 0
-   },
-   "Component : TilemapObject::Chunk [1 / 3]::Chunk 1 / 3": 
-   {
-       "Average": 57.011192,
-       "CPU usage": 0.000001,
-       "Cardinal": 2496,
-       "Max": 3300,
-       "Min": 0
-   },
-   "Component : TilemapObject::Chunk [2 / 1]::Chunk 2 / 1": 
-   {
-       "Average": 46.750000,
+       "Average": 56.957241,
        "CPU usage": 0.000000,
-       "Cardinal": 400,
-       "Max": 100,
-       "Min": 0
-   },
-   "Component : TilemapObject::Chunk [2 / 2]::Chunk 2 / 2": 
-   {
-       "Average": 51.178322,
-       "CPU usage": 0.000000,
-       "Cardinal": 2249,
-       "Max": 300,
-       "Min": 0
-   },
-   "Component : TilemapObject::Chunk [2 / 3]::Chunk 2 / 3": 
-   {
-       "Average": 49.241940,
-       "CPU usage": 0.000000,
-       "Cardinal": 1649,
-       "Max": 200,
+       "Cardinal": 2386,
+       "Max": 5100,
        "Min": 0
    },
    "Component : TilemapObject::Tilemap": 
    {
-       "Average": 76.359138,
+       "Average": 74.676994,
        "CPU usage": 0.000001,
-       "Cardinal": 10393,
-       "Max": 11800,
+       "Cardinal": 14552,
+       "Max": 10800,
        "Min": 0
    },
    "FPSCounter": 
    {
-       "Average": 4847.765625,
-       "Cardinal": 103,
-       "Max": 5590,
-       "Min": 3650
+       "Average": 4746.000000,
+       "Cardinal": 145,
+       "Max": 5170,
+       "Min": 2970
    },
    "GameEngine": 
    {
-       "Average": 6373.208008,
-       "CPU usage": 0.000060,
-       "Cardinal": 10393,
-       "Max": 43200,
-       "Min": 4000
+       "Average": 6585.968750,
+       "CPU usage": 0.000045,
+       "Cardinal": 14552,
+       "Max": 37800,
+       "Min": 3600
    },
    "GameEngineManager": 
    {
-       "Average": 109.464447,
+       "Average": 110.083549,
        "CPU usage": 0.000001,
-       "Cardinal": 2542942,
-       "Max": 44000,
+       "Cardinal": 3392256,
+       "Max": 51800,
        "Min": 0
    },
    "MainWidget": 
    {
-       "Average": 62.193909,
-       "CPU usage": 0.000001,
-       "Cardinal": 2542942,
-       "Max": 19300,
+       "Average": 65.781952,
+       "CPU usage": 0.000000,
+       "Cardinal": 3392256,
+       "Max": 21000,
        "Min": 0
    },
    "Object : Camera": 
    {
-       "Average": 259.164032,
+       "Average": 279.018280,
        "CPU usage": 0.000002,
-       "Cardinal": 10393,
-       "Max": 15500,
+       "Cardinal": 14552,
+       "Max": 12100,
        "Min": 100
    },
    "Object : Chunk [-1 / -1]": 
    {
-       "Average": 235.876984,
+       "Average": 247.882294,
        "CPU usage": 0.000002,
-       "Cardinal": 1756,
-       "Max": 11900,
+       "Cardinal": 2550,
+       "Max": 9900,
        "Min": 100
    },
    "Object : Chunk [-1 / 0]": 
    {
-       "Average": 226.846146,
+       "Average": 241.191254,
        "CPU usage": 0.000002,
-       "Cardinal": 2004,
-       "Max": 3400,
+       "Cardinal": 8361,
+       "Max": 6000,
        "Min": 100
    },
    "Object : Chunk [-1 / 1]": 
    {
-       "Average": 213.999985,
+       "Average": 223.565536,
        "CPU usage": 0.000002,
-       "Cardinal": 50,
-       "Max": 300,
+       "Cardinal": 4897,
+       "Max": 11900,
        "Min": 100
    },
    "Object : Chunk [0 / -1]": 
    {
-       "Average": 220.878586,
+       "Average": 249.792847,
        "CPU usage": 0.000002,
-       "Cardinal": 1753,
-       "Max": 3900,
+       "Cardinal": 5549,
+       "Max": 13100,
        "Min": 100
    },
    "Object : Chunk [0 / 0]": 
    {
-       "Average": 217.038727,
+       "Average": 243.301590,
        "CPU usage": 0.000002,
-       "Cardinal": 2553,
-       "Max": 4900,
+       "Cardinal": 13898,
+       "Max": 9200,
        "Min": 100
    },
    "Object : Chunk [0 / 1]": 
    {
-       "Average": 215.923203,
+       "Average": 223.368500,
        "CPU usage": 0.000002,
-       "Cardinal": 4641,
-       "Max": 5400,
+       "Cardinal": 6774,
+       "Max": 4600,
        "Min": 100
    },
-   "Object : Chunk [0 / 2]": 
+   "Object : Chunk [1 / -1]": 
    {
-       "Average": 231.029938,
+       "Average": 239.941666,
        "CPU usage": 0.000002,
-       "Cardinal": 4689,
-       "Max": 12100,
-       "Min": 100
-   },
-   "Object : Chunk [0 / 3]": 
-   {
-       "Average": 216.332718,
-       "CPU usage": 0.000002,
-       "Cardinal": 649,
-       "Max": 900,
+       "Cardinal": 2406,
+       "Max": 12000,
        "Min": 100
    },
    "Object : Chunk [1 / 0]": 
    {
-       "Average": 215.714310,
-       "CPU usage": 0.000002,
-       "Cardinal": 350,
-       "Max": 400,
+       "Average": 219.846603,
+       "CPU usage": 0.000001,
+       "Cardinal": 5220,
+       "Max": 5200,
        "Min": 100
    },
    "Object : Chunk [1 / 1]": 
    {
-       "Average": 223.827240,
+       "Average": 229.966431,
        "CPU usage": 0.000002,
-       "Cardinal": 4990,
-       "Max": 12600,
-       "Min": 100
-   },
-   "Object : Chunk [1 / 2]": 
-   {
-       "Average": 213.276825,
-       "CPU usage": 0.000002,
-       "Cardinal": 7336,
-       "Max": 11700,
-       "Min": 100
-   },
-   "Object : Chunk [1 / 3]": 
-   {
-       "Average": 209.054581,
-       "CPU usage": 0.000002,
-       "Cardinal": 2496,
-       "Max": 5300,
-       "Min": 100
-   },
-   "Object : Chunk [2 / 1]": 
-   {
-       "Average": 195.500015,
-       "CPU usage": 0.000002,
-       "Cardinal": 400,
-       "Max": 300,
-       "Min": 100
-   },
-   "Object : Chunk [2 / 2]": 
-   {
-       "Average": 203.244202,
-       "CPU usage": 0.000002,
-       "Cardinal": 2250,
-       "Max": 2600,
-       "Min": 0
-   },
-   "Object : Chunk [2 / 3]": 
-   {
-       "Average": 206.787842,
-       "CPU usage": 0.000002,
-       "Cardinal": 1650,
-       "Max": 700,
+       "Cardinal": 2386,
+       "Max": 11300,
        "Min": 100
    },
    "Object : Player": 
    {
-       "Average": 246.887238,
+       "Average": 279.666870,
        "CPU usage": 0.000002,
-       "Cardinal": 10393,
-       "Max": 7800,
+       "Cardinal": 14552,
+       "Max": 17000,
        "Min": 100
    },
    "Object : TilemapObject": 
    {
-       "Average": 248.648102,
+       "Average": 268.673340,
        "CPU usage": 0.000002,
-       "Cardinal": 10393,
-       "Max": 12000,
-       "Min": 100
+       "Cardinal": 14552,
+       "Max": 11800,
+       "Min": 200
    },
    "PlayerController": 
    {
-       "Average": 263.382812,
+       "Average": 331.421967,
        "CPU usage": 0.000002,
-       "Cardinal": 2542942,
-       "Max": 28200,
+       "Cardinal": 3392256,
+       "Max": 26200,
        "Min": 100
    },
    "TilemapManager": 
    {
-       "Average": 65.359459,
-       "CPU usage": 0.000001,
-       "Cardinal": 2542942,
-       "Max": 28100,
+       "Average": 64.236252,
+       "CPU usage": 0.000000,
+       "Cardinal": 3392256,
+       "Max": 23200,
        "Min": 0
    },
-   "Total program duration": 10543,
+   "Total program duration": 14785,
    "UPSCounter": 
    {
-       "Average": 246887.390625,
-       "Cardinal": 103,
-       "Max": 479150,
-       "Min": 233650
+       "Average": 233948.703125,
+       "Cardinal": 145,
+       "Max": 347570,
+       "Min": 218510
    }
 }
