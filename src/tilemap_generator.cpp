@@ -102,6 +102,11 @@ void materializeArea(TilemapGenerator::OutputFormat& p_tilemap, const spk::Vecto
     }
 }
 
+void createDoor()
+{
+	
+}
+
 TilemapGenerator::AreaMap setupAreaMap(const spk::Vector2Int& p_tilemapSize)
 {
 	TilemapGenerator::AreaMap result;
@@ -173,10 +178,11 @@ spk::Vector2Int computeAreaSize(const TilemapGenerator::AreaMap& p_areaMap, cons
     return result;
 }
 
-void createArea(TilemapGenerator::OutputFormat& p_tilemap, TilemapGenerator::AreaMap& p_areaMap, TilemapGenerator::ChunkList& p_chunkList, spk::Vector2Int p_start, const spk::Vector2Int& p_areaChunkSize, const spk::Vector2Int& p_minimalSize, const spk::Vector2Int& p_maximalSize)
+void createArea(TilemapGenerator::OutputFormat& p_tilemap, TilemapGenerator::AreaList& p_areaList, TilemapGenerator::AreaMap& p_areaMap, TilemapGenerator::ChunkList& p_chunkList, spk::Vector2Int p_start, const spk::Vector2Int& p_areaChunkSize, const spk::Vector2Int& p_minimalSize, const spk::Vector2Int& p_maximalSize)
 {
 	spk::Vector2Int size = computeAreaSize(p_areaMap, p_start, p_minimalSize, p_maximalSize);
 
+	p_areaList.push_back(TilemapGenerator::Area(p_start, size));
 	materializeArea(p_tilemap, p_start * p_areaChunkSize, (p_start + size) * p_areaChunkSize - 1, 1);
 
 	for (int i = 0; i < size.x; i++)
@@ -192,6 +198,7 @@ void createArea(TilemapGenerator::OutputFormat& p_tilemap, TilemapGenerator::Are
 
 void generateAreas(TilemapGenerator::OutputFormat& p_tilemap, const spk::Vector2Int& p_tilemapAreaSize, const spk::Vector2Int& p_areaChunkSize, const spk::Vector2Int& p_minimalSize, const spk::Vector2Int& p_maximalSize, long long p_seed)
 {
+	TilemapGenerator::AreaList areaList;
 	TilemapGenerator::AreaMap areaMap = setupAreaMap(p_tilemapAreaSize);
 	TilemapGenerator::ChunkList chunkList = setupChunkList(p_tilemapAreaSize);
 
@@ -205,7 +212,12 @@ void generateAreas(TilemapGenerator::OutputFormat& p_tilemap, const spk::Vector2
 		
 		size_t index = randomGenerator.sample();
 
-		createArea(p_tilemap, areaMap, chunkList, chunkList[index], p_areaChunkSize, p_minimalSize, p_maximalSize);
+		createArea(p_tilemap, areaList, areaMap, chunkList, chunkList[index], p_areaChunkSize, p_minimalSize, p_maximalSize);
+	}
+
+	for (size_t i = 0; i < areaList.size(); i++)
+	{
+		std::cout << "Area [" << i << "] -> Anchor : " << areaList[i].anchor << " / Size : " << areaList[i].size << std::endl;
 	}
 }
 

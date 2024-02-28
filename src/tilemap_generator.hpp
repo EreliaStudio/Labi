@@ -5,8 +5,14 @@
 class TilemapGenerator
 {
 public:
+	struct Area
+	{
+		spk::Vector2Int anchor;
+		spk::Vector2Int size;
+	};
 	using OutputFormat = std::vector<std::vector<int>>;
 	using AreaMap = std::map<spk::Vector2Int, bool>;
+	using AreaList = std::vector<Area>;
 	using ChunkList = std::vector<spk::Vector2Int>;
 
 	enum class Type
