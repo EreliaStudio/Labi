@@ -14,8 +14,7 @@ MainWidget::MainWidget(const std::string& p_name) :
 	_gameEngineManager("GameEngineManager", this),
 	_playerController("PlayerController", this),
 	_tilemapManager("TilemapManager", this)
-{
-
+{ 
 	_playerController.playerBodyRenderer()->setSpriteSheet(TextureAtlas::instance()->as<spk::SpriteSheet>("PlayerSprite"));
 
 	_gameEngine.subscribe(&(_playerController.playerObject()));

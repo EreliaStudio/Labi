@@ -1,6 +1,7 @@
 #include "tilemap_manager.hpp"
 
 #include "texture_atlas.hpp"
+#include "tilemap_generator.hpp"
 
 void TilemapManager::_updateChunkVisibleOnScreen()
 {
@@ -11,8 +12,8 @@ void TilemapManager::_updateChunkVisibleOnScreen()
 
 	spk::Vector2Int playerPosition = spk::Camera::mainCamera()->owner()->globalPosition().xy();
 
-	spk::Vector2 start = spk::Tilemap2D::convertWorldToChunkPosition(playerPosition - nbTileOnScreen);
-	spk::Vector2 end = spk::Tilemap2D::convertWorldToChunkPosition(playerPosition + nbTileOnScreen);
+	spk::Vector2 start = spk::Tilemap2D::convertWorldToChunkPosition(playerPosition - nbTileOnScreen - 1);
+	spk::Vector2 end = spk::Tilemap2D::convertWorldToChunkPosition(playerPosition + nbTileOnScreen + 1);
 
 	_tilemapComponent->setActiveChunkRange(start, end);
 
@@ -29,17 +30,6 @@ void TilemapManager::_updateChunkVisibleOnScreen()
 		spk::Vector2Int(1, 1)
 	};
 
-	for (const auto& element : _tilemapComponent->missingChunks())
-	{
-		spk::Tilemap2D::Chunk* newChunk = dynamic_cast<spk::Tilemap2D::Chunk*>(_tilemapComponent->createEmpyChunk(element));
-
-		for (size_t i = 0; i < 8; i++)
-		{
-			spk::GameObject* chunkObject = _tilemapComponent->chunkObject(element + chunkOffsets[i]);
-			if (chunkObject != nullptr)
-				chunkObject->getComponent<spk::Tilemap2D::Chunk>()->bake();
-		}
-	}
 	_tilemapComponent->updateActiveChunks();
 }
 
@@ -50,6 +40,37 @@ void TilemapManager::_onRender()
 		_updateChunkVisibleOnScreen();
 		_needActiveChunkUpdate = false;
 	}
+}
+
+void TilemapManager::_applyChunkValues(const TilemapGenerator::OutputFormat& p_tilemapValues)
+{
+	if (p_tilemapValues.size() == 0)
+		return ;
+
+	spk::Vector2Int tilemapSize = spk::Vector2Int(p_tilemapValues.size() / spk::Tilemap2D::Chunk::SizeX, p_tilemapValues[0].size() / spk::Tilemap2D::Chunk::SizeY);
+
+	for (int i = 0; i < tilemapSize.x; i++)
+	{
+		for (int j = 0; j < tilemapSize.y; j++)
+		{
+			spk::Tilemap2D::Chunk* newChunk = dynamic_cast<spk::Tilemap2D::Chunk*>(_tilemapComponent->createEmpyChunk(spk::Vector2Int(i, j)));
+
+			for (int x = 0; x < spk::Tilemap2D::Chunk::SizeX; x++)
+			{
+				for (int y = 0; y < spk::Tilemap2D::Chunk::SizeY; y++)
+				{
+					newChunk->setContent(x, y, 0, p_tilemapValues[i * spk::Tilemap2D::Chunk::SizeX + x][ j * spk::Tilemap2D::Chunk::SizeY + y]);
+				}  
+			}
+		}
+	}
+}
+
+void TilemapManager::_generateTilemap(const spk::Vector2Int& p_tilemapSize)
+{
+	TilemapGenerator::OutputFormat tilemapValues = _tilemapGenerator.generate(TilemapGenerator::Type::Cave, spk::Vector2Int(12, 12));
+
+	_applyChunkValues(tilemapValues);
 }
 
 TilemapManager::TilemapManager(const std::string& p_name, spk::IWidget* p_parent) :
@@ -63,9 +84,10 @@ TilemapManager::TilemapManager(const std::string& p_name, spk::IWidget* p_parent
 	_tilemapObject.transform().translation = spk::Vector3(0, 0, 0);
 	
 	_tilemapComponent->insertNodeType(0, spk::Tilemap2D::Node(spk::Vector2Int(0, 0), spk::Tilemap2D::Node::OBSTACLE, true));
-	_tilemapComponent->insertNodeType(1, spk::Tilemap2D::Node(spk::Vector2Int(4, 0), spk::Tilemap2D::Node::WALKABLE, false));
-	
-	_tilemapComponent->setSpriteSheet(TextureAtlas::instance()->as<spk::SpriteSheet>("WorldTileset"));
+	  
+	_tilemapComponent->setSpriteSheet(TextureAtlas::instance()->as<spk::SpriteSheet>("worldBackgound"));
+
+	_generateTilemap(spk::Vector2Int(12, 12));
 }
 
 spk::GameObject& TilemapManager::tilemapObject()

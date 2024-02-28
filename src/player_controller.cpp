@@ -4,7 +4,7 @@
 
 void PlayerController::_onGeometryChange()
 {
-	_cameraComponent->setOrthographicSize(size() / 64);
+	_cameraComponent->setOrthographicSize(size() / 16);
 	EventSource::instance()->notify_all(Event::UpdateVisibleChunk);
 }
 
@@ -66,7 +66,7 @@ PlayerController::PlayerController(const std::string &p_name, spk::IWidget *p_pa
 	_cameraComponent->setAspectRatio(1.0f);
 	_cameraComponent->setFOV(75);
 
-	_playerBodyRenderer->setSpriteSheet(TextureAtlas::instance()->as<spk::SpriteSheet>("PlayerSprite"));
+	_playerBodyRenderer->setSpriteSheet(TextureAtlas::instance()->as<spk::SpriteSheet>("playerSpriteSheet"));
 
 }
 
