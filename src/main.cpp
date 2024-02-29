@@ -4,7 +4,7 @@
 #include "main_widget.hpp"
 
 int main()
-{
+{ 
     spk::Application app = spk::Application("Labi", spk::Vector2UInt(800, 800), spk::Application::Mode::Monothread);
 
     MainWidget mainWidget = MainWidget("MainWidget");

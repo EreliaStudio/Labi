@@ -83,7 +83,7 @@ TilemapManager::TilemapManager(const std::string& p_name, spk::IWidget* p_parent
 {
 	_tilemapObject.transform().translation = spk::Vector3(0, 0, 0);
 	
-	_tilemapComponent->insertNodeType(0, spk::Tilemap2D::Node(spk::Vector2Int(0, 0), spk::Tilemap2D::Node::OBSTACLE, true));
+	_tilemapComponent->insertNodeType(0, spk::Tilemap2D::Node(spk::Vector2Int(0, 0), spk::Tilemap2D::Node::OBSTACLE, spk::Tilemap2D::Node::Type::Autotile));
 	  
 	_tilemapComponent->setSpriteSheet(TextureAtlas::instance()->as<spk::SpriteSheet>("worldBackgound"));
 
