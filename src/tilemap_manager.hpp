@@ -20,6 +20,7 @@ private:
 
 public:
     TilemapManager(const std::string& p_name, spk::IWidget* p_parent);
+    ~TilemapManager();
 
     spk::GameObject& tilemapObject();
     spk::Tilemap2D* tilemapComponent();

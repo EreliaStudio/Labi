@@ -2,22 +2,24 @@
 
 void TilemapEditor::_onUpdate()
 {
-	if (spk::Application::activeApplication()->timeManager().deltaTime() == 0)
-		return;
-
-	static const spk::Vector2Int chunkOffset[9] = {
-		spk::Vector2Int(-1, -1),		
-		spk::Vector2Int(0, -1),		
-		spk::Vector2Int(1, -1),
-
-		spk::Vector2Int(-1, 0),		
-		spk::Vector2Int(0, 0),		
-		spk::Vector2Int(1, 0),		
-
-		spk::Vector2Int(-1, 1),		
-		spk::Vector2Int(0, 1),		
-		spk::Vector2Int(1, 1)
+	spk::Keyboard::Key valueKeys[8] = {
+		spk::Keyboard::Key1,
+		spk::Keyboard::Key2,
+		spk::Keyboard::Key3,
+		spk::Keyboard::Key4,
+		spk::Keyboard::Key5,
+		spk::Keyboard::Key6,
+		spk::Keyboard::Key7,
+		spk::Keyboard::Key8
 	};
+
+	for (size_t i = 0; i < 8; i++)
+	{
+		if (spk::Application::activeApplication()->keyboard().getKey(valueKeys[i]) == spk::InputState::Pressed)
+		{
+			selectedValue = i;
+		}
+	}
 
 	if (spk::Application::activeApplication()->mouse().getButton(spk::Mouse::Left) == spk::InputState::Down)
 	{
@@ -31,17 +33,33 @@ void TilemapEditor::_onUpdate()
 
 			spk::Vector2Int relativePosition = chunk->convertAbsoluteToRelativePosition(mouseWorldPosition);
 
-			if (chunk->content(relativePosition, 0) != 1)
+			if (chunk->content(relativePosition, 0) != values[selectedValue])
 			{
-				chunk->setContent(relativePosition, 0, 1);
+				chunk->setContent(relativePosition, 1, values[selectedValue]);
 
-				for (size_t i = 0; i < 9; i++)
-				{
-					spk::GameObject* chunkObject = _tilemap->chunkObject(chunkPosition + chunkOffset[i]);
-					if (chunkObject != nullptr)
-						chunkObject->getComponent<spk::Tilemap2D::Chunk>()->bake();
-				}
-			}
+				_tilemap->rebakeChunk(chunkPosition);
+			} 
+		}
+	}
+	
+	if (spk::Application::activeApplication()->mouse().getButton(spk::Mouse::Right) == spk::InputState::Down)
+	{
+		spk::Vector2Int mouseWorldPosition = spk::Vector2::floor(spk::Camera::convertScreenToWorldPosition2D(spk::Application::activeApplication()->mouse().position(), anchor(), size()));
+
+		spk::Vector2Int chunkPosition = _tilemap->convertWorldToChunkPosition(mouseWorldPosition);
+
+		if (_tilemap->containsChunk(chunkPosition) == true)
+		{
+			spk::Tilemap2D::Chunk* chunk = _tilemap->chunkObject(chunkPosition)->getComponent<spk::Tilemap2D::Chunk>();
+
+			spk::Vector2Int relativePosition = chunk->convertAbsoluteToRelativePosition(mouseWorldPosition);
+
+			if (chunk->content(relativePosition, 0) != -1)
+			{
+				chunk->setContent(relativePosition, 1, -1);
+
+				_tilemap->rebakeChunk(chunkPosition);
+			} 
 		}
 	}
 }

@@ -55,6 +55,11 @@ TilemapManager::TilemapManager(const std::string &p_name, spk::IWidget *p_parent
 	_tilemapComponent->setSpriteSheet(TextureAtlas::instance()->as<spk::SpriteSheet>("ChunkSpriteSheet"));
 }
 
+TilemapManager::~TilemapManager()
+{
+	_tilemapComponent->saveToFolder("resources/chunk");
+}
+
 spk::GameObject &TilemapManager::tilemapObject()
 {
 	return (_tilemapObject);

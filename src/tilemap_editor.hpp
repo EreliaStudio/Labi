@@ -7,6 +7,9 @@ class TilemapEditor : public spk::IWidget
 private:
 	spk::Tilemap2D* _tilemap;
 
+	size_t selectedValue = 0;
+	short values[8] = {415, 416, 418, 495, 799, 5, 6, 7};
+
 	void _onUpdate();
 
 public:
