@@ -2,8 +2,7 @@
 
 TextureAtlas::TextureAtlas()
 {
-	add<spk::SpriteSheet>("PlayerSprite", "playerSpriteSheet.png", spk::Vector2Int(4, 4));
-	add<spk::SpriteSheet>("WorldTileset", "worldBackground.png", spk::Vector2Int(16, 24));
+
 }
 
 const spk::Texture* TextureAtlas::texture(const std::string& p_name) const

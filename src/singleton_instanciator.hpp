@@ -13,8 +13,8 @@ public:
         EventSource::instanciate();
         TextureAtlas::instanciate();
 
-        TextureAtlas::instance()->add<spk::SpriteSheet>("worldBackgound", "worldBackground.png", spk::Vector2Int(16, 24));
-        TextureAtlas::instance()->add<spk::SpriteSheet>("playerSpriteSheet", "playerSpriteSheet.png", spk::Vector2Int(4, 4));
+        TextureAtlas::instance()->add<spk::SpriteSheet>("ChunkSpriteSheet", "resources/texture/chunk_sprite_sheet.png", spk::Vector2Int(32, 66));
+        TextureAtlas::instance()->add<spk::SpriteSheet>("PlayerSprite", "resources/texture/playerSpriteSheet.png", spk::Vector2Int(4, 4));
     }
 
     ~SingletonInstanciator()

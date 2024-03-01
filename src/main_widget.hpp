@@ -4,6 +4,7 @@
 #include "singleton_instanciator.hpp"
 #include "player_controller.hpp"
 #include "tilemap_manager.hpp"
+#include "tilemap_editor.hpp"
 
 class MainWidget : public spk::IWidget
 {
@@ -15,6 +16,8 @@ private:
     spk::GameEngineManager _gameEngineManager;
     PlayerController _playerController;
     TilemapManager _tilemapManager;
+
+    TilemapEditor _tilemapEditor;
 
     void _onGeometryChange();
 

@@ -4,7 +4,8 @@
 
 void PlayerController::_onGeometryChange()
 {
-	_cameraComponent->setOrthographicSize(size() / 16);
+	_cameraComponent->setOrthographicSize(size() / 32);
+	_nbTileOnScreen = size() / _cameraComponent->orthographicSize();
 	EventSource::instance()->notify_all(Event::UpdateVisibleChunk);
 }
 
@@ -21,10 +22,10 @@ void PlayerController::_onUpdate()
 		spk::Keyboard::D};
 
 	spk::Vector3 deltas[4] = {
-		spk::Vector3(0, 0.1f, 0),
-		spk::Vector3(0, -0.1f, 0),
-		spk::Vector3(-0.1f, 0, 0),
-		spk::Vector3(0.1f, 0, 0)};
+		spk::Vector3(0, 1.0f, 0),
+		spk::Vector3(0, -1.0f, 0),
+		spk::Vector3(-1.0f, 0, 0),
+		spk::Vector3(1.0f, 0, 0)};
 
 	spk::Vector3 nextDelta = 0;
 
@@ -34,7 +35,7 @@ void PlayerController::_onUpdate()
 			currentNextInput <= spk::getTime())
 		{
 			nextDelta += deltas[i];
-			nextInput = time + 10;
+			nextInput = time + 150;
 		} 
 	}
 
@@ -66,7 +67,7 @@ PlayerController::PlayerController(const std::string &p_name, spk::IWidget *p_pa
 	_cameraComponent->setAspectRatio(1.0f);
 	_cameraComponent->setFOV(75);
 
-	_playerBodyRenderer->setSpriteSheet(TextureAtlas::instance()->as<spk::SpriteSheet>("playerSpriteSheet"));
+	_playerBodyRenderer->setSpriteSheet(TextureAtlas::instance()->as<spk::SpriteSheet>("PlayerSprite"));
 
 }
 

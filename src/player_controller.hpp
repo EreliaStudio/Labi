@@ -12,6 +12,8 @@ private:
     spk::Camera* _cameraComponent;
     spk::MeshRenderer *_playerBodyRenderer;
 
+    spk::Vector2 _nbTileOnScreen;
+
     void _onGeometryChange();
 
     void _onUpdate();
