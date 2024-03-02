@@ -6,7 +6,6 @@ void MainWidget::_onGeometryChange()
 	_gameEngineManager.setGeometry(anchor(), size());
 	_playerController.setGeometry(anchor(), size());
 	_tilemapManager.setGeometry(anchor(), size());
-	_tilemapEditor.setGeometry(anchor(), size());
 }
 
 MainWidget::MainWidget(const std::string& p_name) :
@@ -14,13 +13,11 @@ MainWidget::MainWidget(const std::string& p_name) :
 	_singletonInstanciator(),
 	_gameEngineManager("GameEngineManager", this),
 	_playerController("PlayerController", this),
-	_tilemapManager("TilemapManager", this),
-	_tilemapEditor("TilemapEditor", this)
+	_tilemapManager("TilemapManager", this)
 { 
 	_playerController.playerBodyRenderer()->setSpriteSheet(TextureAtlas::instance()->as<spk::SpriteSheet>("PlayerSprite"));
 
-	_tilemapEditor.setTilemap(_tilemapManager.tilemapComponent());
-
+	_playerController.setTilemap(_tilemapManager.tilemapComponent());
 	_gameEngine.subscribe(&(_playerController.playerObject()));
 	_gameEngine.subscribe(&(_tilemapManager.tilemapObject()));
 
@@ -28,7 +25,6 @@ MainWidget::MainWidget(const std::string& p_name) :
 	_gameEngineManager.activate(); 
 	_playerController.activate(); 
 	_tilemapManager.activate(); 
-	_tilemapEditor.activate();
 }
 
 MainWidget::~MainWidget()

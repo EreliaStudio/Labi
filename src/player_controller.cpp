@@ -29,21 +29,34 @@ void PlayerController::_onUpdate()
 
 	spk::Vector3 nextDelta = 0;
 
-	for (size_t i = 0; i < 4; i++)
+	for (size_t i = 0; i < 4; i++) 
 	{
 		if (spk::Application::activeApplication()->keyboard().getKey(keys[i]) == spk::InputState::Down &&
-			currentNextInput <= spk::getTime())
+			currentNextInput <= spk::getTime() &&
+			_tilemap->isObstacle((_endingPosition + deltas[i]).xy()) == false &&
+			_tilemap->isObstacle((_endingPosition + nextDelta + deltas[i]).xy()) == false)
 		{
 			nextDelta += deltas[i];
 			nextInput = time + 150;
-		} 
+		}
 	}
 
 	if (nextDelta != 0)
 	{
-		_playerObject.transform().translation += nextDelta; 
-		EventSource::instance()->notify_all(Event::UpdateVisibleChunk);
+    	_startingTime = time;
+		_endingTime = _startingTime + 140;
+		_startingPosition = _playerObject.transform().translation;
+		_endingPosition = _playerObject.transform().translation.get() + nextDelta;
 	} 
+
+	if (time <= _endingTime)
+	{
+		_playerObject.transform().translation = spk::Vector3::lerp(_startingPosition, _endingPosition, 1.0f - ((_endingTime - time) / 140.0f)); 
+		if (time == _endingTime)
+		{
+			EventSource::instance()->notify_all(Event::UpdateVisibleChunk);
+		}
+	}
 }
 
 PlayerController::PlayerController(const std::string &p_name, spk::IWidget *p_parent) :
@@ -68,7 +81,11 @@ PlayerController::PlayerController(const std::string &p_name, spk::IWidget *p_pa
 	_cameraComponent->setFOV(75);
 
 	_playerBodyRenderer->setSpriteSheet(TextureAtlas::instance()->as<spk::SpriteSheet>("PlayerSprite"));
+}
 
+void PlayerController::setTilemap(spk::Tilemap2D* p_tilemap)
+{
+	_tilemap = p_tilemap;
 }
 
 spk::GameObject &PlayerController::playerObject()
