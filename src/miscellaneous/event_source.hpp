@@ -4,7 +4,7 @@
 
 enum class Event
 {
-    UpdateVisibleChunk
+    UpdateVisibleChunkRequest
 };
 
 using EventSource = spk::Singleton<spk::EventManager<Event>>;

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "event_source.hpp"
-#include "texture_atlas.hpp"
+#include "miscellaneous/event_source.hpp"
+#include "miscellaneous/texture_atlas.hpp"
 
 class SingletonInstanciator
 {

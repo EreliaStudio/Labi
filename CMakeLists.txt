@@ -13,7 +13,7 @@ find_package(Sparkle REQUIRED)
 file(GLOB_RECURSE SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 add_executable(${ProductName} ${SRC_FILES})
 
-target_include_directories(${ProductName} PRIVATE "${SPARKLE_INCLUDE_DIRS}")
+target_include_directories(${ProductName} PRIVATE "${SPARKLE_INCLUDE_DIRS}" "${CMAKE_SOURCE_DIR}/src")
 target_link_directories(${ProductName} PRIVATE "${SPARKLE_LIBRARY_DIRS}")
 
 target_link_libraries(${ProductName} "${SPARKLE_LIBRARIES}")

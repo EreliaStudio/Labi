@@ -1,9 +1,8 @@
 #pragma once
 
-#include "sparkle.hpp"
-#include "singleton_instanciator.hpp"
-#include "player_controller.hpp"
-#include "tilemap_manager.hpp"
+#include "miscellaneous/singleton_instanciator.hpp"
+
+#include "object/player_object.hpp"
 
 class MainWidget : public spk::IWidget
 {
@@ -13,10 +12,15 @@ private:
     SingletonInstanciator _singletonInstanciator;
     
     spk::GameEngineManager _gameEngineManager;
-    PlayerController _playerController;
-    TilemapManager _tilemapManager;
+
+    PlayerObject _playerObject;
+    spk::Tilemap2D _tilemap2D;
+
+    std::unique_ptr<spk::Notifier::Contract> _onChunkUpdateContract;
 
     void _onGeometryChange();
+
+    void _loadTilemapNode();
 
 public:
     MainWidget(const std::string& p_name);
