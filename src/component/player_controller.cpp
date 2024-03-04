@@ -35,21 +35,9 @@ void PlayerController::_onUpdate()
 	}
 }
 
-void PlayerController::_movePlayer(const spk::Vector3& p_deltaPosition, const long long& p_duration)
-{
-	if (Context::instance()->tilemap->isObstacle(owner()->globalPosition() + p_deltaPosition) == false)
-		_motionController->requestMotion(p_deltaPosition, p_duration);
-}
-
 PlayerController::PlayerController(const std::string& p_name) :
 	spk::GameComponent(p_name),
-	_motionController(owner()->getComponent<MotionController>()),
-	_notifierContracts{
-		EventSource::instance()->subscribe(Event::PlayerMotionUp,	 [&](){_movePlayer(spk::Vector3( 0,  1, 0), 150);}),
-		EventSource::instance()->subscribe(Event::PlayerMotionLeft,  [&](){_movePlayer(spk::Vector3(-1,  0, 0), 150);}),
-		EventSource::instance()->subscribe(Event::PlayerMotionDown,  [&](){_movePlayer(spk::Vector3( 0, -1, 0), 150);}),
-		EventSource::instance()->subscribe(Event::PlayerMotionRight, [&](){_movePlayer(spk::Vector3( 1,  0, 0), 150);})
-	}
+	_motionController(owner()->getComponent<MotionController>())
 {
 
 }

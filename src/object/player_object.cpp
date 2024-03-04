@@ -3,6 +3,7 @@
 
 PlayerObject::PlayerObject(const std::string& p_name, spk::GameObject* p_parent) :
 	ActorObject(p_name, p_parent),
+	_stateMachine(),
 	_cameraObject("Camera", this),
 	_controller(addComponent<PlayerController>("Controller"))
 { 
@@ -13,6 +14,24 @@ PlayerObject::PlayerObject(const std::string& p_name, spk::GameObject* p_parent)
 	_cameraObject.setAsMainCamera();
 
 	setSpriteSheet(TextureAtlas::instance()->as<spk::SpriteSheet>("PlayerSprite"));
+
+	_stateMachine.addState(Mode::World, spk::StateMachine<Mode>::Action(
+		[&](){_controller->activate();},
+		[&](){},
+		[&](){_controller->deactivate();})
+	);
+	_stateMachine.addState(Mode::Battle, spk::StateMachine<Mode>::Action(
+		[&](){},
+		[&](){},
+		[&](){})
+	);
+
+	_stateMachine.enterState(Mode::World);
+}
+
+void PlayerObject::setMode(const PlayerObject::Mode& p_mode)
+{
+	_stateMachine.enterState(p_mode);
 }
 
 spk::Camera& PlayerObject::camera()
