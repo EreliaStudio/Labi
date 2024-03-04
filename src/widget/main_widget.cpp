@@ -1,6 +1,10 @@
 #include "main_widget.hpp"
 #include "miscellaneous/texture_atlas.hpp"
 
+#include "miscellaneous/event_source.hpp"
+#include "miscellaneous/texture_atlas.hpp"
+#include "miscellaneous/context.hpp"
+
 void MainWidget::_onGeometryChange()
 {
 	_gameEngineManager.setGeometry(anchor(), size());
@@ -36,6 +40,9 @@ MainWidget::MainWidget(const std::string& p_name) :
 		_tilemap2D.updateActiveChunks();
 	})) 
 {
+	Context::instance()->playerObject = &_playerObject;
+	Context::instance()->tilemap = &_tilemap2D;
+
 	_playerObject.transform().translation = spk::Vector3(0, 0, 2.5f);
 
 	_tilemap2D.setSpriteSheet(TextureAtlas::instance()->as<spk::SpriteSheet>("ChunkSpriteSheet"));

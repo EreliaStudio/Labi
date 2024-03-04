@@ -13,8 +13,8 @@ private:
     
     spk::GameEngineManager _gameEngineManager;
 
-    PlayerObject _playerObject;
     spk::Tilemap2D _tilemap2D;
+    PlayerObject _playerObject;
 
     std::unique_ptr<spk::Notifier::Contract> _onChunkUpdateContract;
 

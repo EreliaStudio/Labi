@@ -4,7 +4,11 @@
 
 enum class Event
 {
-    UpdateVisibleChunkRequest
+    UpdateVisibleChunkRequest,
+    PlayerMotionUp,
+    PlayerMotionLeft,
+    PlayerMotionDown,
+    PlayerMotionRight
 };
 
 using EventSource = spk::Singleton<spk::EventManager<Event>>;
