@@ -30,7 +30,6 @@ private:
 
     void _loadTilemapNode();
 
-    BattleAreaObject::TileObject::Type _convertNodeToBattleTile(const spk::Vector2Int& p_absolutePosition);
     void _populateBattleArea();
 	void _movePlayer(const spk::Vector3& p_deltaPosition, const long long& p_duration);
 

@@ -12,8 +12,6 @@ public:
 		enum class Type
 		{
 			Standard,
-			SemiObstacle,
-			Obstacle,
 			Ally,
 			Enemy,
 			Player,
@@ -54,8 +52,6 @@ public:
 			_typeRenderer->setSpriteSheet(TextureAtlas::instance()->as<spk::SpriteSheet>("BattleUISpriteSheet"));
 
 			_type.addState(Type::Standard, spk::StateMachine<Type>::Action([&](){_typeRenderer->deactivate();}, nullptr, [&](){_typeRenderer->activate();}));
-			_type.addState(Type::SemiObstacle, spk::StateMachine<Type>::Action([&](){_typeRenderer->setSprite(spk::Vector2Int(3, 0));}, nullptr, nullptr));
-			_type.addState(Type::Obstacle, spk::StateMachine<Type>::Action([&](){_typeRenderer->deactivate();}, nullptr, [&](){_typeRenderer->activate();}));
 			_type.addState(Type::Border, spk::StateMachine<Type>::Action([&](){_typeRenderer->setSprite(spk::Vector2Int(7, 0));}, nullptr, nullptr));
 			_type.addState(Type::Ally, spk::StateMachine<Type>::Action([&](){_typeRenderer->setSprite(spk::Vector2Int(1, 0));}, nullptr, nullptr));
 			_type.addState(Type::Enemy, spk::StateMachine<Type>::Action([&](){_typeRenderer->setSprite(spk::Vector2Int(2, 0));}, nullptr, nullptr));
@@ -114,10 +110,10 @@ public:
 		});
 	}
 
-	void addTileToBattle(const spk::Vector2Int& p_position, const TileObject::Type& p_type)
+	void addBattleTile(const spk::Vector2Int& p_position)
 	{
 		Tile newTile = _tilePool.obtain();
-		newTile->setType(p_type);
+		newTile->setType(TileObject::Type::Standard);
 		newTile->transform().translation = spk::Vector3(p_position.x, p_position.y, 0);
 		_tiles[p_position] = std::move(newTile);
 	}

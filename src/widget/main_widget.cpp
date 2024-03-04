@@ -36,31 +36,36 @@ void MainWidget::_onUpdate()
 		EventSource::instance()->notify_all(Event::ExitBattleMode);
 }
 
-BattleAreaObject::TileObject::Type MainWidget::_convertNodeToBattleTile(const spk::Vector2Int& p_absolutePosition)
+std::map<spk::Vector2Int, bool> computeCircleArea(const float& p_radius)
 {
-	int flags = _tilemap2D.flag(p_absolutePosition);
+	static spk::Vector2Int deltaPosition[4] = {
+		spk::Vector2Int(1, 0),
+		spk::Vector2Int(-1, 0),
+		spk::Vector2Int(0, 1),
+		spk::Vector2Int(0, -1)
+	};
+	std::map<spk::Vector2Int, bool> result;
+	float squaredDistance = p_radius * p_radius;
 
-	if (flags & SEMI_OBSTACLE == SEMI_OBSTACLE)
-		return (BattleAreaObject::TileObject::Type::SemiObstacle);
-	if (flags & spk::Tilemap2D::Node::OBSTACLE == spk::Tilemap2D::Node::OBSTACLE)
-		return (BattleAreaObject::TileObject::Type::Obstacle);
-	else
-		return (BattleAreaObject::TileObject::Type::Obstacle);
-}
-
-std::vector<spk::Vector2Int> _preloadBattleAreaCircle(const float& p_circleRadius)
-{
-	std::vector<spk::Vector2Int> result;
-
-	float squaredDistance = p_circleRadius * p_circleRadius;
-
-	for (int i = -p_circleRadius; i <= p_circleRadius; i++)
+	for (int i = -p_radius; i <= p_radius; i++)
 	{
-		for (int j = -p_circleRadius; j <= p_circleRadius; j++)
+		for (int j = -p_radius; j <= p_radius; j++)
 		{
-			spk::Vector2Int position = spk::Vector2Int(i, j);
-			if (position.distance(0) <= p_circleRadius)
-				result.push_back(position);
+			spk::Vector2Int tmpPosition = spk::Vector2Int(i, j);
+
+			if (tmpPosition.distanceSquared(0) <= squaredDistance + 1.0f)
+			{
+				result[tmpPosition] = false;
+			}
+		}
+	}
+
+	for (auto&[key, element] : result)
+	{
+		for (size_t i = 0; i < 4; i++)
+		{
+			if (result.contains(key + deltaPosition[i]) == false)
+				element = true;
 		}
 	}
 
@@ -69,37 +74,19 @@ std::vector<spk::Vector2Int> _preloadBattleAreaCircle(const float& p_circleRadiu
 
 void MainWidget::_populateBattleArea()
 {
-	static std::vector<spk::Vector2Int> battleAreaCircle = _preloadBattleAreaCircle(10);
 	spk::Vector2Int playerPosition = spk::Vector2Int::floor(_playerObject.globalPosition().xy());
-	std::vector<spk::Vector2Int> selectedTiles;
-	std::vector<spk::Vector2Int> borderTiles;
-	std::vector<spk::Vector2Int> toCalc = {playerPosition};
 
-	size_t index = 0;
-	while (toCalc.size() > index)
+	static std::map<spk::Vector2Int, bool> circleArea = computeCircleArea(10.0f);
+	
+	for (auto& [key, element] : circleArea)
 	{
-		if (std::find(selectedTiles.begin(), selectedTiles.end(), toCalc[index]) == selectedTiles.end())
-		{
-			if(playerPosition.distance(toCalc[index]) <= 1 &&
-				_tilemap2D.isObstacle(toCalc[index]) == false) 
-			{
-				insertNewNode(selectedTiles, toCalc, toCalc[index]);
-			}
-			else
-			{
-				borderTiles.push_back(toCalc[index]);
-			}
+		spk::Vector2Int absolutePosition = key + playerPosition;
+		if (element == true)
+			_battleAreaObject.addBorderTile(absolutePosition);
+		else
+		{	
+			_battleAreaObject.addBattleTile(absolutePosition);
 		}
-		index++;
-	}
-
-	for (const auto& tile : selectedTiles)
-	{
-		_battleAreaObject.addTileToBattle(tile, _convertNodeToBattleTile(tile));
-	}
-	for (const auto& tile : borderTiles)
-	{
-		_battleAreaObject.addBorderTile(tile);
 	}
 }
 
