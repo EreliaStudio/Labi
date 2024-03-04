@@ -13,7 +13,7 @@ PlayerObject::PlayerObject(const std::string& p_name, spk::GameObject* p_parent)
 	_cameraObject.setType(spk::Camera::Type::Orthographic);
 	_cameraObject.setAsMainCamera();
 
-	setSpriteSheet(TextureAtlas::instance()->as<spk::SpriteSheet>("PlayerSprite"));
+	setSpriteSheet(TextureAtlas::instance()->as<spk::SpriteSheet>("PlayerSpriteSheet"));
 
 	_stateMachine.addState(Mode::World, spk::StateMachine<Mode>::Action(
 		[&](){_controller->activate();},

@@ -32,36 +32,75 @@ void insertNewNode(std::vector<spk::Vector2Int>& p_selectedTile, std::vector<spk
 
 void MainWidget::_onUpdate()
 {
-	if (spk::Application::activeApplication()->keyboard().getKey(spk::Keyboard::Space) == spk::InputState::Down)
-		_playerObject.setMode(PlayerObject::Mode::World);
+	if (spk::Application::activeApplication()->keyboard().getKey(spk::Keyboard::Space) == spk::InputState::Pressed)
+		EventSource::instance()->notify_all(Event::ExitBattleMode);
 }
 
-void MainWidget::_generateFightArea()
+BattleAreaObject::TileObject::Type MainWidget::_convertNodeToBattleTile(const spk::Vector2Int& p_absolutePosition)
 {
+	int flags = _tilemap2D.flag(p_absolutePosition);
+
+	if (flags & SEMI_OBSTACLE == SEMI_OBSTACLE)
+		return (BattleAreaObject::TileObject::Type::SemiObstacle);
+	if (flags & spk::Tilemap2D::Node::OBSTACLE == spk::Tilemap2D::Node::OBSTACLE)
+		return (BattleAreaObject::TileObject::Type::Obstacle);
+	else
+		return (BattleAreaObject::TileObject::Type::Obstacle);
+}
+
+std::vector<spk::Vector2Int> _preloadBattleAreaCircle(const float& p_circleRadius)
+{
+	std::vector<spk::Vector2Int> result;
+
+	float squaredDistance = p_circleRadius * p_circleRadius;
+
+	for (int i = -p_circleRadius; i <= p_circleRadius; i++)
+	{
+		for (int j = -p_circleRadius; j <= p_circleRadius; j++)
+		{
+			spk::Vector2Int position = spk::Vector2Int(i, j);
+			if (position.distance(0) <= p_circleRadius)
+				result.push_back(position);
+		}
+	}
+
+	return (result);
+}
+
+void MainWidget::_populateBattleArea()
+{
+	static std::vector<spk::Vector2Int> battleAreaCircle = _preloadBattleAreaCircle(10);
 	spk::Vector2Int playerPosition = spk::Vector2Int::floor(_playerObject.globalPosition().xy());
 	std::vector<spk::Vector2Int> selectedTiles;
+	std::vector<spk::Vector2Int> borderTiles;
 	std::vector<spk::Vector2Int> toCalc = {playerPosition};
 
 	size_t index = 0;
 	while (toCalc.size() > index)
 	{
-		if (std::find(selectedTiles.begin(), selectedTiles.end(), toCalc[index]) == selectedTiles.end() &&
-			playerPosition.distance(toCalc[index]) <= 2 &&
-			_tilemap2D.isObstacle(toCalc[index]) == false)
+		if (std::find(selectedTiles.begin(), selectedTiles.end(), toCalc[index]) == selectedTiles.end())
 		{
-			insertNewNode(selectedTiles, toCalc, toCalc[index]);
+			if(playerPosition.distance(toCalc[index]) <= 1 &&
+				_tilemap2D.isObstacle(toCalc[index]) == false) 
+			{
+				insertNewNode(selectedTiles, toCalc, toCalc[index]);
+			}
+			else
+			{
+				borderTiles.push_back(toCalc[index]);
+			}
 		}
 		index++;
 	}
 
-	std::cout << "Selected tile : ";
-	for (size_t i = 0; i < selectedTiles.size(); i++)
+	for (const auto& tile : selectedTiles)
 	{
-		if (i != 0)
-			std::cout << " - ";
-		std::cout << "[" << selectedTiles[i] << "]";
+		_battleAreaObject.addTileToBattle(tile, _convertNodeToBattleTile(tile));
 	}
-	std::cout << std::endl;
+	for (const auto& tile : borderTiles)
+	{
+		_battleAreaObject.addBorderTile(tile);
+	}
 }
 
 void MainWidget::_movePlayer(const spk::Vector3& p_deltaPosition, const long long& p_duration)
@@ -71,9 +110,8 @@ void MainWidget::_movePlayer(const spk::Vector3& p_deltaPosition, const long lon
 	{
 		if (_tilemap2D.isFlag(nextPlace, BUSH) == true && _bushFightGenerator.sample() < 100)
 		{
-			_playerObject.setMode(PlayerObject::Mode::Battle);
 			_playerObject.transform().translation += p_deltaPosition;
-			_generateFightArea();
+			EventSource::instance()->notify_all(Event::EnterBattleMode);
 		}
 		else
 		{
@@ -82,12 +120,26 @@ void MainWidget::_movePlayer(const spk::Vector3& p_deltaPosition, const long lon
 	}
 }
 
+void MainWidget::_enterBattleMode()
+{
+	_populateBattleArea();
+	_playerObject.setMode(PlayerObject::Mode::Battle);
+	_battleAreaObject.activate();
+}
+
+void MainWidget::_exitBattleMode()
+{
+	_playerObject.setMode(PlayerObject::Mode::World);
+	_battleAreaObject.deactivate();
+}
+
 MainWidget::MainWidget(const std::string& p_name) :
 	spk::IWidget(p_name),
 	_singletonInstanciator(),
 	_gameEngineManager("GameEngineManager", this), 
 	_playerObject("Player"),
 	_tilemap2D("Tilemap"),
+	_battleAreaObject("BattleArea"),
 	_onChunkUpdateContract(EventSource::instance()->subscribe(Event::UpdateVisibleChunkRequest, [&](){
 		spk::Vector2 nbTileOnScreen = static_cast<spk::Vector2>(size()) / static_cast<spk::Vector2>(spk::Camera::mainCamera()->orthographicSize());
 		spk::Vector2Int nbChunkOnScreen = spk::Tilemap2D::convertWorldToChunkPosition(nbTileOnScreen) / 2.0f + 1;
@@ -109,12 +161,14 @@ MainWidget::MainWidget(const std::string& p_name) :
 		}
 		_tilemap2D.updateActiveChunks();
 	})),
-	_notifierContracts{
+	_playerMotionContracts{
 		EventSource::instance()->subscribe(Event::PlayerMotionUp,	 [&](){_movePlayer(spk::Vector3( 0,  1, 0), 150);}),
 		EventSource::instance()->subscribe(Event::PlayerMotionLeft,  [&](){_movePlayer(spk::Vector3(-1,  0, 0), 150);}),
 		EventSource::instance()->subscribe(Event::PlayerMotionDown,  [&](){_movePlayer(spk::Vector3( 0, -1, 0), 150);}),
 		EventSource::instance()->subscribe(Event::PlayerMotionRight, [&](){_movePlayer(spk::Vector3( 1,  0, 0), 150);})
-	}
+	},
+	_enteringBattleModeContract(EventSource::instance()->subscribe(Event::EnterBattleMode, [&](){_enterBattleMode();})),
+	_exitingBattleModeContract(EventSource::instance()->subscribe(Event::ExitBattleMode, [&](){_exitBattleMode();}))
 {
 	Context::instance()->playerObject = &_playerObject;
 	Context::instance()->tilemap = &_tilemap2D;
@@ -126,12 +180,16 @@ MainWidget::MainWidget(const std::string& p_name) :
 	_tilemap2D.setSpriteSheet(TextureAtlas::instance()->as<spk::SpriteSheet>("ChunkSpriteSheet"));
 	_loadTilemapNode();
 
+	_battleAreaObject.deactivate();
+
 	_gameEngine.subscribe(&_playerObject);
 	_gameEngine.subscribe(&_tilemap2D); 
+	_gameEngine.subscribe(&_battleAreaObject); 
 
 	_gameEngineManager.setGameEngine(&_gameEngine);
 	_gameEngineManager.activate(); 
 
+	_exitBattleMode();
 }
 
 MainWidget::~MainWidget()

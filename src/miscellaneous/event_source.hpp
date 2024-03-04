@@ -8,7 +8,9 @@ enum class Event
     PlayerMotionUp,
     PlayerMotionLeft,
     PlayerMotionDown,
-    PlayerMotionRight
+    PlayerMotionRight,
+    EnterBattleMode,
+    ExitBattleMode
 };
 
 using EventSource = spk::Singleton<spk::EventManager<Event>>;
