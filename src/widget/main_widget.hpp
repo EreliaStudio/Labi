@@ -9,16 +9,10 @@
 class MainWidget : public spk::IWidget
 {
 private:
-    spk::GameEngine _gameEngine;
-
     SingletonInstanciator _singletonInstanciator;
     
     spk::GameEngineManager _gameEngineManager;
 
-    spk::Tilemap2D _tilemap2D;
-    PlayerObject _playerObject;
-
-    BattleAreaObject _battleAreaObject;
     spk::RandomGenerator<int> _bushFightGenerator;
 
 	spk::NotifierContract _playerMotionContracts[4];

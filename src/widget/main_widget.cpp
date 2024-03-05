@@ -8,7 +8,7 @@
 void MainWidget::_onGeometryChange()
 {
 	_gameEngineManager.setGeometry(anchor(), size());
-	_playerObject.camera().setOrthographicSize(static_cast<spk::Vector2>(size()) / 32.0f);
+	Context::instance()->playerObject.camera().setOrthographicSize(static_cast<spk::Vector2>(size()) / 32.0f);
 	EventSource::instance()->notify_all(Event::UpdateVisibleChunkRequest);
 }
 
@@ -74,35 +74,42 @@ std::map<spk::Vector2Int, bool> computeCircleArea(const float& p_radius)
 
 void MainWidget::_populateBattleArea()
 {
-	spk::Vector2Int playerPosition = spk::Vector2Int::floor(_playerObject.globalPosition().xy());
+	spk::Vector2Int playerPosition = spk::Vector2Int::floor(Context::instance()->playerObject.globalPosition().xy());
 
 	static std::map<spk::Vector2Int, bool> circleArea = computeCircleArea(10.0f);
 	
 	for (auto& [key, element] : circleArea)
 	{
 		spk::Vector2Int absolutePosition = key + playerPosition;
+
 		if (element == true)
-			_battleAreaObject.addBorderTile(absolutePosition);
+			Context::instance()->battleAreaObject.addBorderTile(absolutePosition);
 		else
 		{	
-			_battleAreaObject.addBattleTile(absolutePosition);
+			Context::instance()->battleAreaObject.addBattleTile(
+					absolutePosition,
+					(Context::instance()->tilemap.isObstacle(absolutePosition) == true ? BattleArenaObject::TileObject::Type::Obstacle : BattleArenaObject::TileObject::Type::Standard)
+				);
 		}
 	}
+
+	Context::instance()->battleAreaObject.generateStartingPosition(BattleArenaObject::TileObject::Type::AllyStartingPosition, 5);
+	Context::instance()->battleAreaObject.generateStartingPosition(BattleArenaObject::TileObject::Type::EnemyStartingPosition, 5); 
 }
 
 void MainWidget::_movePlayer(const spk::Vector3& p_deltaPosition, const long long& p_duration)
 {
-	spk::Vector3 nextPlace = _playerObject.globalPosition() + p_deltaPosition;
-	if (_tilemap2D.isObstacle(nextPlace) == false) 
+	spk::Vector3 nextPlace = Context::instance()->playerObject.globalPosition() + p_deltaPosition;
+	if (Context::instance()->tilemap.isObstacle(nextPlace) == false) 
 	{
-		if (_tilemap2D.isFlag(nextPlace, BUSH) == true && _bushFightGenerator.sample() < 100)
+		if (Context::instance()->tilemap.isFlag(nextPlace, BUSH) == true && _bushFightGenerator.sample() < 100)
 		{
-			_playerObject.transform().translation += p_deltaPosition;
+			Context::instance()->playerObject.transform().translation += p_deltaPosition;
 			EventSource::instance()->notify_all(Event::EnterBattleMode);
 		}
 		else
 		{
-			_playerObject.requestMotion(p_deltaPosition, p_duration);
+			Context::instance()->playerObject.requestMotion(p_deltaPosition, p_duration);
 		}	
 	}
 }
@@ -110,43 +117,40 @@ void MainWidget::_movePlayer(const spk::Vector3& p_deltaPosition, const long lon
 void MainWidget::_enterBattleMode()
 {
 	_populateBattleArea();
-	_playerObject.setMode(PlayerObject::Mode::Battle);
-	_battleAreaObject.activate();
+	Context::instance()->playerObject.setMode(PlayerObject::Mode::Battle);
+	Context::instance()->battleAreaObject.activate();
 }
 
 void MainWidget::_exitBattleMode()
 {
-	_playerObject.setMode(PlayerObject::Mode::World);
-	_battleAreaObject.deactivate();
+	Context::instance()->playerObject.setMode(PlayerObject::Mode::World);
+	Context::instance()->battleAreaObject.deactivate();
 }
 
 MainWidget::MainWidget(const std::string& p_name) :
 	spk::IWidget(p_name),
 	_singletonInstanciator(),
 	_gameEngineManager("GameEngineManager", this), 
-	_playerObject("Player"),
-	_tilemap2D("Tilemap"),
-	_battleAreaObject("BattleArea"),
 	_onChunkUpdateContract(EventSource::instance()->subscribe(Event::UpdateVisibleChunkRequest, [&](){
 		spk::Vector2 nbTileOnScreen = static_cast<spk::Vector2>(size()) / static_cast<spk::Vector2>(spk::Camera::mainCamera()->orthographicSize());
 		spk::Vector2Int nbChunkOnScreen = spk::Tilemap2D::convertWorldToChunkPosition(nbTileOnScreen) / 2.0f + 1;
-		spk::Vector2Int playerChunkPosition = spk::Tilemap2D::convertWorldToChunkPositionXY(_playerObject.globalPosition());
+		spk::Vector2Int playerChunkPosition = spk::Tilemap2D::convertWorldToChunkPositionXY(Context::instance()->playerObject.globalPosition());
 
 		spk::Vector2Int first = playerChunkPosition - nbChunkOnScreen;
 		spk::Vector2Int second = playerChunkPosition + nbChunkOnScreen;
 
-		_tilemap2D.setActiveChunkRange(first, second);
-		for (auto& chunkMissing : _tilemap2D.missingChunks())
+		Context::instance()->tilemap.setActiveChunkRange(first, second);
+		for (auto& chunkMissing : Context::instance()->tilemap.missingChunks())
 		{
 			std::filesystem::path chunkFile = "resources/chunk/chunk_" + std::to_string(chunkMissing.x) + "_" + std::to_string(chunkMissing.y) + ".chk";
  
 			if (std::filesystem::exists(chunkFile)) 
 			{
-				spk::Tilemap2D::IChunk* newChunk = _tilemap2D.createChunk(chunkMissing); 
+				spk::Tilemap2D::IChunk* newChunk = Context::instance()->tilemap.createChunk(chunkMissing); 
 				newChunk->loadFromFile(chunkFile);
 			}
 		}
-		_tilemap2D.updateActiveChunks();
+		Context::instance()->tilemap.updateActiveChunks();
 	})),
 	_playerMotionContracts{
 		EventSource::instance()->subscribe(Event::PlayerMotionUp,	 [&](){_movePlayer(spk::Vector3( 0,  1, 0), 150);}),
@@ -157,23 +161,20 @@ MainWidget::MainWidget(const std::string& p_name) :
 	_enteringBattleModeContract(EventSource::instance()->subscribe(Event::EnterBattleMode, [&](){_enterBattleMode();})),
 	_exitingBattleModeContract(EventSource::instance()->subscribe(Event::ExitBattleMode, [&](){_exitBattleMode();}))
 {
-	Context::instance()->playerObject = &_playerObject;
-	Context::instance()->tilemap = &_tilemap2D;
-
 	_bushFightGenerator.configureRange(0, 100);
 
-	_playerObject.transform().translation = spk::Vector3(0, 0, 2.5f);
+	Context::instance()->playerObject.transform().translation = spk::Vector3(0, 0, 2.5f);
 
-	_tilemap2D.setSpriteSheet(TextureAtlas::instance()->as<spk::SpriteSheet>("ChunkSpriteSheet"));
+	Context::instance()->tilemap.setSpriteSheet(TextureAtlas::instance()->as<spk::SpriteSheet>("ChunkSpriteSheet"));
 	_loadTilemapNode();
 
-	_battleAreaObject.deactivate();
+	Context::instance()->battleAreaObject.deactivate();
 
-	_gameEngine.subscribe(&_playerObject);
-	_gameEngine.subscribe(&_tilemap2D); 
-	_gameEngine.subscribe(&_battleAreaObject); 
+	Context::instance()->gameEngine.subscribe(&(Context::instance()->playerObject));
+	Context::instance()->gameEngine.subscribe(&(Context::instance()->tilemap)); 
+	Context::instance()->gameEngine.subscribe(&Context::instance()->battleAreaObject); 
 
-	_gameEngineManager.setGameEngine(&_gameEngine);
+	_gameEngineManager.setGameEngine(&(Context::instance()->gameEngine));
 	_gameEngineManager.activate(); 
 
 	_exitBattleMode();

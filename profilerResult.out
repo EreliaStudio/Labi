@@ -1,297 +1,297 @@
 {
    "CentralWidget": 
    {
-       "Average": 458.090515,
+       "Average": 451.150452,
        "CPU usage": 0.000002,
-       "Cardinal": 70974,
-       "Max": 208300,
+       "Cardinal": 28459,
+       "Max": 19500,
        "Min": 200
    },
    "Component : Chunk -1 / -1::Renderer": 
    {
-       "Average": 105.041046,
+       "Average": 108.414566,
        "CPU usage": 0.000000,
-       "Cardinal": 20058,
-       "Max": 9300,
+       "Cardinal": 16517,
+       "Max": 9000,
        "Min": 0
    },
    "Component : Chunk -1 / 0::Renderer": 
    {
-       "Average": 77.929016,
+       "Average": 68.038948,
        "CPU usage": 0.000000,
-       "Cardinal": 20058,
-       "Max": 5300,
+       "Cardinal": 16517,
+       "Max": 5200,
        "Min": 0
    },
    "Component : Chunk -1 / 1::Renderer": 
    {
-       "Average": 74.733475,
+       "Average": 60.150074,
        "CPU usage": 0.000000,
-       "Cardinal": 20058,
-       "Max": 16700,
+       "Cardinal": 16517,
+       "Max": 5300,
        "Min": 0
    },
    "Component : Chunk 0 / -1::Renderer": 
    {
-       "Average": 69.448563,
+       "Average": 59.296486,
        "CPU usage": 0.000000,
-       "Cardinal": 20058,
-       "Max": 11900,
+       "Cardinal": 16517,
+       "Max": 500,
        "Min": 0
    },
    "Component : Chunk 0 / 0::Renderer": 
    {
-       "Average": 70.400810,
+       "Average": 58.339851,
        "CPU usage": 0.000000,
-       "Cardinal": 20058,
-       "Max": 11700,
+       "Cardinal": 16517,
+       "Max": 6000,
        "Min": 0
    },
    "Component : Chunk 0 / 1::Renderer": 
    {
-       "Average": 72.794479,
+       "Average": 66.912796,
        "CPU usage": 0.000000,
-       "Cardinal": 20058,
-       "Max": 18900,
+       "Cardinal": 16517,
+       "Max": 9300,
        "Min": 0
    },
    "Component : Chunk 1 / -1::Renderer": 
    {
-       "Average": 73.377106,
+       "Average": 58.545670,
        "CPU usage": 0.000000,
-       "Cardinal": 20058,
-       "Max": 5400,
+       "Cardinal": 16517,
+       "Max": 9000,
        "Min": 0
    },
    "Component : Chunk 1 / 0::Renderer": 
    {
-       "Average": 64.592636,
+       "Average": 54.846500,
        "CPU usage": 0.000000,
-       "Cardinal": 20058,
-       "Max": 8700,
+       "Cardinal": 16517,
+       "Max": 11700,
        "Min": 0
    },
    "Component : Chunk 1 / 1::Renderer": 
    {
-       "Average": 69.433632,
+       "Average": 67.015686,
        "CPU usage": 0.000000,
-       "Cardinal": 20058,
-       "Max": 11900,
+       "Cardinal": 16517,
+       "Max": 12300,
        "Min": 0
    },
    "Component : Player::BodyRenderer": 
    {
-       "Average": 129.798691,
-       "CPU usage": 0.000001,
-       "Cardinal": 20058,
-       "Max": 12300,
+       "Average": 95.319756,
+       "CPU usage": 0.000000,
+       "Cardinal": 16517,
+       "Max": 8700,
        "Min": 0
    },
    "Component : Player::Camera::Camera": 
    {
-       "Average": 98.644608,
+       "Average": 107.337440,
        "CPU usage": 0.000000,
-       "Cardinal": 20058,
-       "Max": 4400,
+       "Cardinal": 16517,
+       "Max": 11400,
        "Min": 0
    },
    "Component : Player::Controller": 
    {
-       "Average": 5222.037109,
-       "CPU usage": 0.000023,
-       "Cardinal": 20058,
-       "Max": 86564100,
+       "Average": 16929.152344,
+       "CPU usage": 0.000078,
+       "Cardinal": 16517,
+       "Max": 96318700,
        "Min": 0
    },
    "Component : Player::MotionController": 
    {
-       "Average": 4396.588867,
-       "CPU usage": 0.000019,
-       "Cardinal": 20058,
-       "Max": 43200,
+       "Average": 1017.526672,
+       "CPU usage": 0.000005,
+       "Cardinal": 16517,
+       "Max": 47600,
        "Min": 0
    },
    "Component : TileObject::StatusObject::Renderer": 
    {
-       "Average": 51.119686,
+       "Average": 49.469627,
        "CPU usage": 0.000000,
-       "Cardinal": 2386800,
-       "Max": 35100,
+       "Cardinal": 4333225,
+       "Max": 31900,
        "Min": 0
    },
    "Component : TileObject::TypeObject::Renderer": 
    {
-       "Average": 56.305916,
+       "Average": 58.192039,
        "CPU usage": 0.000000,
-       "Cardinal": 2386800,
-       "Max": 31700,
+       "Cardinal": 4333225,
+       "Max": 39100,
        "Min": 0
    },
    "FPSCounter": 
    {
-       "Average": 3154.399902,
-       "Cardinal": 225,
-       "Max": 5240,
-       "Min": 320
+       "Average": 1329.859985,
+       "Cardinal": 214,
+       "Max": 5300,
+       "Min": 500
    },
    "GameEngine": 
    {
-       "Average": 298540.156250,
-       "CPU usage": 0.001307,
-       "Cardinal": 20058,
-       "Max": 87444800,
-       "Min": 10200
+       "Average": 672051.500000,
+       "CPU usage": 0.003080,
+       "Cardinal": 16517,
+       "Max": 97317400,
+       "Min": 10800
    },
    "GameEngineManager": 
    {
-       "Average": 84590.085938,
-       "CPU usage": 0.000370,
-       "Cardinal": 70974,
-       "Max": 87445300,
+       "Average": 390296.968750,
+       "CPU usage": 0.001789,
+       "Cardinal": 28459,
+       "Max": 97317900,
        "Min": 0
    },
    "MainWidget": 
    {
-       "Average": 244.982147,
-       "CPU usage": 0.000001,
-       "Cardinal": 70974,
-       "Max": 446200,
+       "Average": 466.821106,
+       "CPU usage": 0.000002,
+       "Cardinal": 28459,
+       "Max": 513300,
        "Min": 0
    },
    "Object : BattleArea": 
    {
-       "Average": 115.672729,
-       "CPU usage": 0.000001,
-       "Cardinal": 7344,
-       "Max": 11700,
+       "Average": 70.052025,
+       "CPU usage": 0.000000,
+       "Cardinal": 13333,
+       "Max": 6500,
        "Min": 0
    },
    "Object : Camera": 
    {
-       "Average": 288.962250,
+       "Average": 314.271698,
        "CPU usage": 0.000001,
-       "Cardinal": 20058,
-       "Max": 11700,
+       "Cardinal": 16517,
+       "Max": 22900,
        "Min": 200
    },
    "Object : Chunk -1 / -1": 
    {
-       "Average": 303.343536,
+       "Average": 296.121887,
        "CPU usage": 0.000001,
-       "Cardinal": 20058,
-       "Max": 12000,
+       "Cardinal": 16517,
+       "Max": 9200,
        "Min": 200
    },
    "Object : Chunk -1 / 0": 
    {
-       "Average": 263.993042,
+       "Average": 255.348892,
        "CPU usage": 0.000001,
-       "Cardinal": 20058,
-       "Max": 11600,
-       "Min": 200
+       "Cardinal": 16517,
+       "Max": 8600,
+       "Min": 100
    },
    "Object : Chunk -1 / 1": 
    {
-       "Average": 261.193085,
+       "Average": 236.180786,
        "CPU usage": 0.000001,
-       "Cardinal": 20058,
-       "Max": 16900,
-       "Min": 200
+       "Cardinal": 16517,
+       "Max": 12600,
+       "Min": 100
    },
    "Object : Chunk 0 / -1": 
    {
-       "Average": 261.328003,
+       "Average": 242.907028,
        "CPU usage": 0.000001,
-       "Cardinal": 20058,
-       "Max": 29900,
+       "Cardinal": 16517,
+       "Max": 11700,
        "Min": 100
    },
    "Object : Chunk 0 / 0": 
    {
-       "Average": 259.402924,
+       "Average": 233.777390,
        "CPU usage": 0.000001,
-       "Cardinal": 20058,
-       "Max": 11900,
-       "Min": 200
+       "Cardinal": 16517,
+       "Max": 36700,
+       "Min": 100
    },
    "Object : Chunk 0 / 1": 
    {
-       "Average": 268.407349,
+       "Average": 243.064743,
        "CPU usage": 0.000001,
-       "Cardinal": 20058,
-       "Max": 36200,
-       "Min": 200
+       "Cardinal": 16517,
+       "Max": 12200,
+       "Min": 100
    },
    "Object : Chunk 1 / -1": 
    {
-       "Average": 263.379486,
+       "Average": 222.413269,
        "CPU usage": 0.000001,
-       "Cardinal": 20058,
-       "Max": 12300,
-       "Min": 200
+       "Cardinal": 16517,
+       "Max": 20300,
+       "Min": 100
    },
    "Object : Chunk 1 / 0": 
    {
-       "Average": 240.806961,
+       "Average": 223.860077,
        "CPU usage": 0.000001,
-       "Cardinal": 20058,
-       "Max": 12600,
+       "Cardinal": 16517,
+       "Max": 21400,
        "Min": 100
    },
    "Object : Chunk 1 / 1": 
    {
-       "Average": 276.309143,
+       "Average": 242.259354,
        "CPU usage": 0.000001,
-       "Cardinal": 20058,
-       "Max": 31300,
+       "Cardinal": 16517,
+       "Max": 12900,
        "Min": 100
    },
    "Object : Player": 
    {
-       "Average": 10266.542969,
-       "CPU usage": 0.000045,
-       "Cardinal": 20058,
-       "Max": 86565900,
+       "Average": 18539.468750,
+       "CPU usage": 0.000085,
+       "Cardinal": 16517,
+       "Max": 96328100,
        "Min": 500
    },
    "Object : StatusObject": 
    {
-       "Average": 222.884750,
+       "Average": 227.270569,
        "CPU usage": 0.000001,
-       "Cardinal": 2386800,
-       "Max": 143700,
+       "Cardinal": 4333225,
+       "Max": 145900,
        "Min": 100
    },
    "Object : TileObject": 
    {
-       "Average": 76.219109,
+       "Average": 74.152367,
        "CPU usage": 0.000000,
-       "Cardinal": 2386800,
-       "Max": 67700,
+       "Cardinal": 4333225,
+       "Max": 35900,
        "Min": 0
    },
    "Object : Tilemap": 
    {
-       "Average": 67.903137,
+       "Average": 70.733292,
        "CPU usage": 0.000000,
-       "Cardinal": 20058,
-       "Max": 27200,
+       "Cardinal": 16517,
+       "Max": 8700,
        "Min": 0
    },
    "Object : TypeObject": 
    {
-       "Average": 247.026688,
+       "Average": 247.925491,
        "CPU usage": 0.000001,
-       "Cardinal": 2386800,
-       "Max": 116300,
+       "Cardinal": 4333225,
+       "Max": 45900,
        "Min": 100
    },
-   "Total program duration": 22850,
+   "Total program duration": 21817,
    "UPSCounter": 
    {
-       "Average": 3154.399902,
-       "Cardinal": 225,
-       "Max": 5240,
-       "Min": 320
+       "Average": 1329.859985,
+       "Cardinal": 214,
+       "Max": 5300,
+       "Min": 500
    }
 }
